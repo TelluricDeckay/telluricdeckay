@@ -7,6 +7,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 
 [[package]]
+name = "configster"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6babd1d246373740e69af11d268c00b4012157eb19e1c9b481bb37d95f5b6f35"
+
+[[package]]
 name = "getrandom"
 version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -20,6 +26,7 @@ dependencies = [
 [[package]]
 name = "ionic_deckhandler"
 version = "0.2.0"
+source = "git+https://github.com/TelluricDeckay/ionic-deckhandler?branch=trunk#69241a8c1d644e5cbdb3a4aa34d835ca079ce9b0"
 dependencies = [
  "rand",
 ]
@@ -81,6 +88,7 @@ dependencies = [
 name = "telluricdeckay"
 version = "0.1.0"
 dependencies = [
+ "configster",
  "ionic_deckhandler",
 ]
 

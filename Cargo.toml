@@ -10,6 +10,7 @@ license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
+configster = "0.1.1"
 #ionic_deckhandler = { path = "../ionic-deckhandler" }
 
 ionic_deckhandler = { git = "https://github.com/TelluricDeckay/ionic-deckhandler", branch = "trunk" }
