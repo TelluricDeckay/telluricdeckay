@@ -11,7 +11,7 @@ struct Action {
 #[derive(Debug)]
 pub struct Player {
     name: &'static str,
-    hand: [Card; 5],
+    pub hand: [Card; 5],
     chips: i32,
     // actions: Action,
 }

@@ -2,11 +2,17 @@ use crate::player::Player;
 use ionic_deckhandler::{Card, Deck, Rank, Suit};
 
 #[derive(Debug)]
-pub enum Game {
-    FiveCardDraw {
-        players: Vec<Player>,
-        pot: i32,
-        deck: Vec<Card>,
-    },
+pub struct Game {
+    pub players: Vec<Player>,
+    pub pot: i32,
+    pub deck: Vec<Card>,
+    pub card_dealing: CardDealing,
+}
+
+#[derive(Debug)]
+pub enum CardDealing {
+    FiveCardDraw,
     FiveCardDoubleDraw,
+    SevenCardStud,
+    FiveCardStud,
 }

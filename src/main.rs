@@ -16,22 +16,24 @@ fn main() -> Result<(), io::Error> {
     }
     println!("Player Nick is {}", config_data.player_nick);
 
-    // The server will keep track of connected players.
-    //
-    // Connected players will select if they will be joining a pending game
-    let players = vec![player::Player::new("P1"), player::Player::new("P2")] ;
+    let mut new_game = {
+        // The server will keep track of connected players.
+        //
+        // Connected players will select if they will be joining a pending game
+        let players = vec![player::Player::new("P1"), player::Player::new("P2")] ;
 
-    // The host will select to start the game
-    let new_game = game::Game::FiveCardDraw { players: players, pot: 0, deck: Card::get_deck() };
+        // The host will select to start the game
+        game::Game { players: players, pot: 0, deck: Card::get_deck(), card_dealing: game::CardDealing::FiveCardDraw }
 
-    // println!("{:?}", game);
+        // println!("{:?}", game);
+    };
 
     // Deal the cards
     let mut cards_dealt = 0;
     for i in 0..5 {
-        for j in &players {
-            let receive = &new_game { players, pot, deck[cards_dealt] };
-            new_game { players: player[j].hand[i] } = receive;
+        for pl in new_game.players.iter_mut() {
+            // let receive = &new_game;// { players, pot, deck[cards_dealt] };
+            pl.hand[i] = new_game.deck.take_from_top().expect("Error: deck is empty!");
             cards_dealt += 1;
         }
     }
