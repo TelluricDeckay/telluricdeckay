@@ -1,19 +1,34 @@
 use ionic_deckhandler::{Card, Rank, Suit};
 
-struct Action {
-    fold: bool,
-    check: bool,
-    open: bool,
-    bet: i32,
-    raise: i32,
+#[derive(Debug, Copy, Clone)]
+pub struct Action {
+    pub fold: bool,
+    pub check: bool,
+    pub open: bool,
+    pub bet: i32,
+    pub call: bool,
+    pub raise: i32,
 }
 
-#[derive(Debug)]
+impl Action {
+    pub fn new() -> Self {
+        Self {
+            fold: false,
+            check: false,
+            open: false,
+            bet: 0,
+            call: false,
+            raise: 0,
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
 pub struct Player {
     pub name: &'static str,
     pub hand: [Card; 5],
-    chips: i32,
-    // actions: Action,
+    pub chips: i32,
+    pub action: Action,
 }
 
 impl Player {
@@ -29,6 +44,7 @@ impl Player {
                 Card::new(Rank::Nine, Suit::Clubs),
             ],
             chips: 100,
+            action: Action::new(),
         }
     }
 }
