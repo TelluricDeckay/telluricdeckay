@@ -27,9 +27,13 @@ fn main() -> Result<(), io::Error> {
             game::Game {
                 players: players,
                 pot: 0,
+                initial_bet_plus_raises: 0,
                 deck: Card::get_deck(),
                 card_dealing: game::CardDealing::FiveCardDraw,
-                last_player: None,
+                previous_player: None,
+
+                // Only used to init the game. The action is changed the first time a player executes a turn.
+                previous_player_action: player::Action::Fold,
             }
 
             // println!("{:?}", game);
@@ -39,6 +43,7 @@ fn main() -> Result<(), io::Error> {
         for pl in new_game.players.iter_mut() {
             pl.chips -= 1;
             new_game.pot += 1;
+            println!("{} adds 1 for the ante", pl.name);
         }
 
         new_game.deck.shuffle_deck();
@@ -53,34 +58,66 @@ fn main() -> Result<(), io::Error> {
         }
 
         let mut all_bets_paid: bool = false;
-        // last_player_turn = Some(player);
+
         while all_bets_paid == false {
+            let mut input;
             for pl in new_game.players.iter_mut() {
-                match new_game.last_player {
+                match new_game.previous_player {
                     None => {
-                        // some of this repetition will be moved into a function or maybe
-                        // an implementation
-                        pl.action.bet = 5;
-                        pl.action.open = true;
-                        pl.chips -= pl.action.bet;
-                        new_game.pot += pl.action.bet;
-                        println!("{} opens with {}", pl.name, pl.action.bet);
-                        new_game.last_player = Some(*pl);
+                        input = player::Action::Open;
+                        new_game.previous_player = Some(*pl);
+
+                        match input {
+                            player::Action::Open => {
+                                new_game.previous_player_action = input;
+                                let input_open = 5;
+                                player::open(input_open, &mut pl.chips, &mut new_game.pot);
+                                println!("{} opens with {}", pl.name, input_open);
+                                new_game.initial_bet_plus_raises = input_open;
+                            }
+                            player::Action::Fold => new_game.previous_player_action = input,
+                            // This player should now be allowed to still "observe" the game
+                            // until the end. They don't have to show their cards.
+                            //
+                            player::Action::Check => new_game.previous_player_action = input,
+                            _ => (), // The UI should only allow the options above
+                        }
                     }
                     _ => {
-                        if new_game.last_player.unwrap().action.open {
-                            pl.action.call = true;
-                            pl.action.bet = new_game.last_player.unwrap().action.bet;
-                            pl.chips -= pl.action.bet;
-                            println!("{} calls bet of {}", pl.name, pl.action.bet);
-                            new_game.pot += new_game.last_player.unwrap().action.bet;
-                            new_game.last_player = Some(*pl);
+                        input = player::Action::Call;
+                        new_game.previous_player = Some(*pl);
+
+                        match new_game.previous_player_action {
+                            player::Action::Open => {
+                                new_game.previous_player_action = input;
+                                player::call(&mut pl.chips, &new_game.initial_bet_plus_raises, &mut new_game.pot);
+                                println!(
+                                    "{} calls bet of ${}",
+                                    pl.name, new_game.initial_bet_plus_raises
+                                );
+                            }
+                            player::Action::Raise => {
+                                new_game.previous_player_action = input;
+                                let input_raise = 8;
+                                player::raise(
+                                    &input_raise,
+                                    &new_game.initial_bet_plus_raises,
+                                    &mut pl.chips,
+                                    &mut new_game.pot,
+                                );
+                                println!(
+                                    "{} calls bet of ${} and raises ${}",
+                                    pl.name, new_game.initial_bet_plus_raises, input_raise
+                                );
+                            }
+                            player::Action::Check => new_game.previous_player_action = input,
+                            player::Action::Fold => new_game.previous_player_action = input,
+                            _ => (),
                         }
                     }
                 }
             }
 
-            // Player 1 opens
             all_bets_paid = true;
         }
 

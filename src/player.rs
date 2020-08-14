@@ -1,16 +1,16 @@
+use crate::game::Game;
 use ionic_deckhandler::{Card, Rank, Suit};
 
 #[derive(Debug, Copy, Clone)]
-pub struct Action {
-    pub fold: bool,
-    pub check: bool,
-    pub open: bool,
-    pub bet: i32,
-    pub call: bool,
-    pub raise: i32,
+pub enum Action {
+    Fold,
+    Check,
+    Open,
+    Call,
+    Raise,
 }
 
-impl Action {
+/* impl Action {
     pub fn new() -> Self {
         Self {
             fold: false,
@@ -21,6 +21,24 @@ impl Action {
             raise: 0,
         }
     }
+} */
+
+// TODO: Add check to make sure player has enough chips, handle case
+pub fn open(input_bet: i32, chips: &mut i32, pot: &mut i32) {
+    *chips -= input_bet;
+    *pot += input_bet;
+}
+
+pub fn call(chips: &mut i32, initial_bet_plus_raises: &i32, pot: &mut i32) {
+    let t = initial_bet_plus_raises;
+    *chips -= t;
+    *pot += t;
+}
+
+pub fn raise(input_raise: &i32, initial_bet_plus_raises: &i32, chips: &mut i32, pot: &mut i32) {
+    let t = initial_bet_plus_raises + input_raise;
+    *chips -= t;
+    *pot += t;
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -28,7 +46,6 @@ pub struct Player {
     pub name: &'static str,
     pub hand: [Card; 5],
     pub chips: i32,
-    pub action: Action,
 }
 
 impl Player {
@@ -44,7 +61,6 @@ impl Player {
                 Card::new(Rank::Nine, Suit::Clubs),
             ],
             chips: 100,
-            action: Action::new(),
         }
     }
 }
