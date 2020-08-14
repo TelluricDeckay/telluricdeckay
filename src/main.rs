@@ -21,6 +21,8 @@ fn main() -> Result<(), io::Error> {
             // The server will keep track of connected players.
             //
             // Connected players will select if they will be joining a pending game
+
+            // FIXME: Players should not start with the same amount of chips for every game.
             let players = vec![player::Player::new("P1"), player::Player::new("P2")];
 
             // The host will select to start the game
@@ -89,30 +91,43 @@ fn main() -> Result<(), io::Error> {
 
                         match new_game.previous_player_action {
                             player::Action::Open => {
-                                new_game.previous_player_action = input;
-                                player::call(&mut pl.chips, &new_game.initial_bet_plus_raises, &mut new_game.pot);
-                                println!(
-                                    "{} calls bet of ${}",
-                                    pl.name, new_game.initial_bet_plus_raises
-                                );
-                            }
-                            player::Action::Raise => {
-                                new_game.previous_player_action = input;
-                                let input_raise = 8;
-                                player::raise(
-                                    &input_raise,
-                                    &new_game.initial_bet_plus_raises,
-                                    &mut pl.chips,
-                                    &mut new_game.pot,
-                                );
-                                println!(
-                                    "{} calls bet of ${} and raises ${}",
-                                    pl.name, new_game.initial_bet_plus_raises, input_raise
-                                );
+                                match input {
+                                    player::Action::Call => {
+                                        new_game.previous_player_action = input;
+                                        player::call(
+                                            &pl.name,
+                                            &mut pl.chips,
+                                            &new_game.initial_bet_plus_raises,
+                                            &mut new_game.pot,
+                                        );
+                                    }
+                                    player::Action::Raise => {
+                                        new_game.previous_player_action = input;
+                                        let input_raise = 8;
+                                        // In a "real" game, a player must call first then raise. So we'll
+                                        // use both the call and raise functions here.
+                                        player::call(
+                                            &pl.name,
+                                            &mut pl.chips,
+                                            &new_game.initial_bet_plus_raises,
+                                            &mut new_game.pot,
+                                        );
+                                        player::raise(
+                                            &input_raise,
+                                            &mut pl.chips,
+                                            &mut new_game.pot,
+                                        );
+                                    }
+                                    player::Action::Check => {
+                                        new_game.previous_player_action = input
+                                    }
+                                    player::Action::Fold => new_game.previous_player_action = input,
+                                    _ => (),
+                                }
                             }
                             player::Action::Check => new_game.previous_player_action = input,
                             player::Action::Fold => new_game.previous_player_action = input,
-                            _ => (),
+                            _ => (), // The UI should only allow the options above.
                         }
                     }
                 }
