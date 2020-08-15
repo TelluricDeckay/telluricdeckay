@@ -28,11 +28,13 @@ pub fn open(
     input_bet: i32,
     chips: &mut i32,
     total_amount_added_this_round: &mut i32,
+    initial_bet_plus_raises: &mut i32,
     pot: &mut i32,
 ) {
     *chips -= input_bet;
     *total_amount_added_this_round += input_bet;
     *pot += input_bet;
+    *initial_bet_plus_raises += input_bet;
 }
 
 pub fn call(
@@ -53,6 +55,7 @@ pub fn raise(
     input_raise: &i32,
     chips: &mut i32,
     total_amount_added_this_round: &mut i32,
+    initial_bet_plus_raises: &mut i32,
     pot: &mut i32,
 ) {
     let t = input_raise;
@@ -60,6 +63,7 @@ pub fn raise(
     *total_amount_added_this_round += t;
     *pot += t;
     println!("and raises ${}", input_raise);
+    *initial_bet_plus_raises += input_raise;
 }
 
 #[derive(Debug, Copy, Clone)]

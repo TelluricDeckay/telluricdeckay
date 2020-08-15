@@ -87,16 +87,14 @@ fn main() -> Result<(), io::Error> {
         while new_game.all_bets_paid == false {
             let mut input: player::Action;
             for pl in new_game.players.iter_mut() {
-                println!(
-                    "{:?}-{:?}",
-                    &new_game.initial_bet_plus_raises, &pl.total_amount_added_this_round
-                );
-                println!("{:?}", &new_game.turns_this_round);
-                println!();
+                // println!("{:?}-{:?}", &new_game.initial_bet_plus_raises, &pl.total_amount_added_this_round);
+                // println!("{:?}", &new_game.turns_this_round);
+                // println!("pot - {:?}", &new_game.pot);
+                // println!();
                 new_game.turns_this_round += 1;
 
                 if (pl.total_amount_added_this_round == new_game.initial_bet_plus_raises)
-                    && (number_of_players == new_game.turns_this_round)
+                    && (new_game.turns_this_round > number_of_players)
                 {
                     new_game.all_bets_paid = true;
                     break;
@@ -104,6 +102,7 @@ fn main() -> Result<(), io::Error> {
                 match new_game.previous_player {
                     None => {
                         input = player::Action::Open;
+                        new_game.previous_player = Some(*pl);
 
                         // The proper conversions will need to be done for this to work
                         //
@@ -129,6 +128,7 @@ fn main() -> Result<(), io::Error> {
                                     input_open,
                                     &mut pl.chips,
                                     &mut pl.total_amount_added_this_round,
+                                    &mut new_game.initial_bet_plus_raises,
                                     &mut new_game.pot,
                                 );
                                 println!("{} opens with {}", pl.name, input_open);
@@ -143,12 +143,13 @@ fn main() -> Result<(), io::Error> {
                         }
                     }
                     _ => {
-                        if new_game.turns_this_round >= 3 {
+                        if new_game.turns_this_round >= 4 {
                             input = player::Action::Call;
                         } else {
                             input = player::Action::Raise;
                         }
 
+                        new_game.previous_player = Some(*pl);
                         match new_game.previous_player_action {
                             player::Action::Open => {
                                 match input {
@@ -178,9 +179,9 @@ fn main() -> Result<(), io::Error> {
                                             &input_raise,
                                             &mut pl.chips,
                                             &mut pl.total_amount_added_this_round,
+                                            &mut new_game.initial_bet_plus_raises,
                                             &mut new_game.pot,
                                         );
-                                        new_game.initial_bet_plus_raises += input_raise;
                                     }
                                     player::Action::Check => {
                                         new_game.previous_player_action = input
@@ -216,9 +217,9 @@ fn main() -> Result<(), io::Error> {
                                     &input_raise,
                                     &mut pl.chips,
                                     &mut pl.total_amount_added_this_round,
+                                    &mut new_game.initial_bet_plus_raises,
                                     &mut new_game.pot,
                                 );
-                                new_game.initial_bet_plus_raises += input_raise;
                             }
                             player::Action::Check => new_game.previous_player_action = input,
                             player::Action::Fold => new_game.previous_player_action = input,
@@ -227,7 +228,6 @@ fn main() -> Result<(), io::Error> {
                     }
                 }
             }
-            // all_bets_paid = true;
         }
 
         // Showdown
