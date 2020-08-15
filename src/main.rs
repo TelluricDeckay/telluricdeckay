@@ -57,10 +57,14 @@ fn main() -> Result<(), io::Error> {
 
                 // Only used to init the game. The action is changed the first time a player executes a turn.
                 previous_player_action: player::Action::Fold,
+                turns_this_round: 0,
+                all_bets_paid: false
             }
 
             // println!("{:?}", game);
         };
+
+        let number_of_players = new_game.players.len();
 
         // Ante
         for pl in new_game.players.iter_mut() {
@@ -80,11 +84,19 @@ fn main() -> Result<(), io::Error> {
             }
         }
 
-        let mut all_bets_paid: bool = false;
-
-        while all_bets_paid == false {
+        while new_game.all_bets_paid == false {
             let mut input: player::Action;
             for pl in new_game.players.iter_mut() {
+                println!("{:?}-{:?}", &new_game.initial_bet_plus_raises, &pl.total_amount_added_this_round);
+                println!("{:?}", &new_game.turns_this_round);
+                println!();
+                new_game.turns_this_round += 1;
+
+                if (pl.total_amount_added_this_round == new_game.initial_bet_plus_raises) &&
+                 (number_of_players == new_game.turns_this_round) {
+                    new_game.all_bets_paid = true;
+                    break;
+                }
                 match new_game.previous_player {
                     None => {
                         input = player::Action::Open;
@@ -104,13 +116,12 @@ fn main() -> Result<(), io::Error> {
                         } else {
                             input = player::Action::Open;
                         } */
-                        new_game.previous_player = Some(*pl);
 
                         match input {
                             player::Action::Open => {
                                 new_game.previous_player_action = input;
                                 let input_open = 5;
-                                player::open(input_open, &mut pl.chips, &mut new_game.pot);
+                                player::open(input_open, &mut pl.chips, &mut pl.total_amount_added_this_round, &mut new_game.pot);
                                 println!("{} opens with {}", pl.name, input_open);
                                 new_game.initial_bet_plus_raises = input_open;
                             }
@@ -119,12 +130,15 @@ fn main() -> Result<(), io::Error> {
                             // until the end. They don't have to show their cards.
                             //
                             player::Action::Check => new_game.previous_player_action = input,
-                            _ => (), // The UI should only allow the options above
+                            _ => println!("Condition mismatch 1"), // The UI should only allow the options above
                         }
                     }
                     _ => {
-                        input = player::Action::Call;
-                        new_game.previous_player = Some(*pl);
+                        if new_game.turns_this_round >= 3 {
+                            input = player::Action::Call;
+                        } else {
+                            input = player::Action::Raise;
+                        }
 
                         match new_game.previous_player_action {
                             player::Action::Open => {
@@ -134,6 +148,7 @@ fn main() -> Result<(), io::Error> {
                                         player::call(
                                             &pl.name,
                                             &mut pl.chips,
+                                            &mut pl.total_amount_added_this_round,
                                             &new_game.initial_bet_plus_raises,
                                             &mut new_game.pot,
                                         );
@@ -146,31 +161,64 @@ fn main() -> Result<(), io::Error> {
                                         player::call(
                                             &pl.name,
                                             &mut pl.chips,
+                                            &mut pl.total_amount_added_this_round,
                                             &new_game.initial_bet_plus_raises,
                                             &mut new_game.pot,
                                         );
                                         player::raise(
                                             &input_raise,
                                             &mut pl.chips,
+                                            &mut pl.total_amount_added_this_round,
                                             &mut new_game.pot,
                                         );
+                                        new_game.initial_bet_plus_raises += input_raise;
                                     }
                                     player::Action::Check => {
                                         new_game.previous_player_action = input
                                     }
                                     player::Action::Fold => new_game.previous_player_action = input,
-                                    _ => (),
+                                    _ => println!("Condition mismatch 2"),
                                 }
                             }
+                            player::Action::Call => {
+                                new_game.previous_player_action = input;
+                                player::call(
+                                    &pl.name,
+                                    &mut pl.chips,
+                                    &mut pl.total_amount_added_this_round,
+                                    &new_game.initial_bet_plus_raises,
+                                    &mut new_game.pot,
+                                );
+                            }
+
+                            player::Action::Raise => {
+                                new_game.previous_player_action = input;
+                                let input_raise = 8;
+                                // In a "real" game, a player must call first then raise. So we'll
+                                // use both the call and raise functions here.
+                                player::call(
+                                    &pl.name,
+                                    &mut pl.chips,
+                                    &mut pl.total_amount_added_this_round,
+                                    &new_game.initial_bet_plus_raises,
+                                    &mut new_game.pot,
+                                );
+                                player::raise(
+                                    &input_raise,
+                                    &mut pl.chips,
+                                    &mut pl.total_amount_added_this_round,
+                                    &mut new_game.pot,
+                                );
+                                new_game.initial_bet_plus_raises += input_raise;
+                            },
                             player::Action::Check => new_game.previous_player_action = input,
                             player::Action::Fold => new_game.previous_player_action = input,
-                            _ => (), // The UI should only allow the options above.
+                            _ => println!("Condition mismatch 3"), // The UI should only allow the options above.
                         }
                     }
                 }
             }
-
-            all_bets_paid = true;
+            // all_bets_paid = true;
         }
 
         // Showdown
