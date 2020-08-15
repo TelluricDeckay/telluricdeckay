@@ -1,3 +1,10 @@
+pub fn get_filename(opt_cfg: Option<String>) -> String {
+    if opt_cfg.is_none() {
+        return "./telluricdeckayrc".to_string();
+    }
+    opt_cfg.unwrap()
+}
+
 pub struct Data {
     pub player_nick: String,
     pub is_server: bool,
