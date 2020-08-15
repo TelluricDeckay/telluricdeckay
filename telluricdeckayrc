@@ -2,3 +2,5 @@ PlayerNick = Tester
 Server = true
 ServerPort = 20002
 
+testing.interactive = true
+

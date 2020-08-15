@@ -3,15 +3,36 @@ mod game;
 mod player;
 use ionic_deckhandler::{Card, Deck};
 use std::io;
+use structopt::StructOpt;
+use telluricdeckay::cli_options;
 
 fn main() -> Result<(), io::Error> {
+    // Some of this code for checking options and getting the configuration
+    // can likely get moved to separate modules later.
     let mut config_data = config::Data::new();
-    let config_vec = configster::parse_file("telluricdeckayrc", ',')?;
+
+    let opt = cli_options::Opt::from_args();
+
+    if opt.version {
+        cli_options::get_version();
+    }
+
+    // This var is also used when cli options are parsed
+    let mut testing_interactive: bool = false;
+    if opt.interactive {
+        testing_interactive = true;
+    }
+
+    let config_file = crate::config::get_filename(opt.custom_config_file);
+    let config_vec = configster::parse_file(&config_file, ',')?;
 
     // Example config usage
     for i in &config_vec {
         if i.option == "PlayerNick" {
             config_data.player_nick = i.value.primary.clone();
+        }
+        if i.option == "testing.interactive" {
+            testing_interactive = true;
         }
     }
     println!("Player Nick is {}", config_data.player_nick);
@@ -62,11 +83,27 @@ fn main() -> Result<(), io::Error> {
         let mut all_bets_paid: bool = false;
 
         while all_bets_paid == false {
-            let mut input;
+            let mut input: player::Action;
             for pl in new_game.players.iter_mut() {
                 match new_game.previous_player {
                     None => {
                         input = player::Action::Open;
+
+                        // The proper conversions will need to be done for this to work
+                        //
+                        /* if testing_interactive {
+                            println!("Player {} action:", pl.name);
+
+                            io::stdin().read_line(&mut input)
+                                .expect("Failed to read line");
+
+                            let input: player::Action = match input.trim().parse() {
+                                Ok(num) => num,
+                                Err(_) => continue,
+                            };
+                        } else {
+                            input = player::Action::Open;
+                        } */
                         new_game.previous_player = Some(*pl);
 
                         match input {
