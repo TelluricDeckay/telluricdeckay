@@ -58,7 +58,7 @@ fn main() -> Result<(), io::Error> {
                 // Only used to init the game. The action is changed the first time a player executes a turn.
                 previous_player_action: player::Action::Fold,
                 turns_this_round: 0,
-                all_bets_paid: false
+                all_bets_paid: false,
             }
 
             // println!("{:?}", game);
@@ -87,13 +87,17 @@ fn main() -> Result<(), io::Error> {
         while new_game.all_bets_paid == false {
             let mut input: player::Action;
             for pl in new_game.players.iter_mut() {
-                println!("{:?}-{:?}", &new_game.initial_bet_plus_raises, &pl.total_amount_added_this_round);
+                println!(
+                    "{:?}-{:?}",
+                    &new_game.initial_bet_plus_raises, &pl.total_amount_added_this_round
+                );
                 println!("{:?}", &new_game.turns_this_round);
                 println!();
                 new_game.turns_this_round += 1;
 
-                if (pl.total_amount_added_this_round == new_game.initial_bet_plus_raises) &&
-                 (number_of_players == new_game.turns_this_round) {
+                if (pl.total_amount_added_this_round == new_game.initial_bet_plus_raises)
+                    && (number_of_players == new_game.turns_this_round)
+                {
                     new_game.all_bets_paid = true;
                     break;
                 }
@@ -121,7 +125,12 @@ fn main() -> Result<(), io::Error> {
                             player::Action::Open => {
                                 new_game.previous_player_action = input;
                                 let input_open = 5;
-                                player::open(input_open, &mut pl.chips, &mut pl.total_amount_added_this_round, &mut new_game.pot);
+                                player::open(
+                                    input_open,
+                                    &mut pl.chips,
+                                    &mut pl.total_amount_added_this_round,
+                                    &mut new_game.pot,
+                                );
                                 println!("{} opens with {}", pl.name, input_open);
                                 new_game.initial_bet_plus_raises = input_open;
                             }
@@ -210,7 +219,7 @@ fn main() -> Result<(), io::Error> {
                                     &mut new_game.pot,
                                 );
                                 new_game.initial_bet_plus_raises += input_raise;
-                            },
+                            }
                             player::Action::Check => new_game.previous_player_action = input,
                             player::Action::Fold => new_game.previous_player_action = input,
                             _ => println!("Condition mismatch 3"), // The UI should only allow the options above.

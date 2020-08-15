@@ -24,13 +24,24 @@ pub enum Action {
 } */
 
 // TODO: Add check to make sure player has enough chips, handle case
-pub fn open(input_bet: i32, chips: &mut i32, total_amount_added_this_round: &mut i32, pot: &mut i32) {
+pub fn open(
+    input_bet: i32,
+    chips: &mut i32,
+    total_amount_added_this_round: &mut i32,
+    pot: &mut i32,
+) {
     *chips -= input_bet;
     *total_amount_added_this_round += input_bet;
     *pot += input_bet;
 }
 
-pub fn call(name: &str, chips: &mut i32, total_amount_added_this_round: &mut i32, initial_bet_plus_raises: &i32, pot: &mut i32) {
+pub fn call(
+    name: &str,
+    chips: &mut i32,
+    total_amount_added_this_round: &mut i32,
+    initial_bet_plus_raises: &i32,
+    pot: &mut i32,
+) {
     let t = initial_bet_plus_raises - *total_amount_added_this_round;
     *chips -= t;
     *total_amount_added_this_round += t;
@@ -38,7 +49,12 @@ pub fn call(name: &str, chips: &mut i32, total_amount_added_this_round: &mut i32
     println!("{} calls bet of ${}", name, t);
 }
 
-pub fn raise(input_raise: &i32, chips: &mut i32, total_amount_added_this_round: &mut i32, pot: &mut i32) {
+pub fn raise(
+    input_raise: &i32,
+    chips: &mut i32,
+    total_amount_added_this_round: &mut i32,
+    pot: &mut i32,
+) {
     let t = input_raise;
     *chips -= t;
     *total_amount_added_this_round += t;
@@ -51,7 +67,7 @@ pub struct Player {
     pub name: &'static str,
     pub hand: [Card; 5],
     pub chips: i32,
-    pub total_amount_added_this_round: i32
+    pub total_amount_added_this_round: i32,
 }
 
 impl Player {
@@ -67,7 +83,7 @@ impl Player {
                 Card::new(Rank::Nine, Suit::Clubs),
             ],
             chips: 100,
-            total_amount_added_this_round: 0
+            total_amount_added_this_round: 0,
         }
     }
 }

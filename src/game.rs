@@ -11,7 +11,7 @@ pub struct Game {
     pub previous_player: Option<Player>,
     pub previous_player_action: Action,
     pub turns_this_round: usize,
-    pub all_bets_paid: bool
+    pub all_bets_paid: bool,
 }
 
 #[derive(Debug)]
