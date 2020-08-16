@@ -143,14 +143,12 @@ fn main() -> Result<(), io::Error> {
                                 println!("{} opens with {}", pl.name, input_open);
                                 new_game.initial_bet_plus_raises = input_open;
                             }
-                            player::Action::Fold => pl.has_folded = player::fold(&pl.name),
 
                             // This player should now be allowed to still "observe" the game
                             // until the end. They don't have to show their cards.
-                            //
-                            player::Action::Check => {
-                                println!("{} checks.", pl.name);
-                            }
+                            player::Action::Fold => pl.has_folded = player::fold(&pl.name),
+
+                            player::Action::Check => player::check(&pl.name),
                             _ => println!("!Condition mismatch 1"), // The UI should only allow the options above
                         }
                     }
@@ -179,12 +177,8 @@ fn main() -> Result<(), io::Error> {
                                     player::Action::Fold => {
                                         pl.has_folded = player::fold(&pl.name);
                                     }
-                                    // This player should now be allowed to still "observe" the game
-                                    // until the end. They don't have to show their cards.
-                                    //
-                                    player::Action::Check => {
-                                        println!("{} checks.", pl.name);
-                                    }
+                                    player::Action::Check => player::check(&pl.name),
+
                                     _ => println!("!Condition mismatch 2"), // The UI should only allow the options above
                                 }
                             }

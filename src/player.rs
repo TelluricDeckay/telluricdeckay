@@ -75,6 +75,10 @@ pub fn raise(
     *initial_bet_plus_raises += input_raise;
 }
 
+pub fn check(name: &str) {
+    println!("{} checks.", name);
+}
+
 // Players that fold shouldn't be popped from the 'players' vector;
 // the server and client needs to know about them throughout the
 // game, and at the end, still display that they folded.
