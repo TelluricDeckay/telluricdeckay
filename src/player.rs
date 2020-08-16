@@ -10,18 +10,18 @@ pub enum Action {
     Raise,
 }
 
-/* impl Action {
-    pub fn new() -> Self {
-        Self {
-            fold: false,
-            check: false,
-            open: false,
-            bet: 0,
-            call: false,
-            raise: 0,
+// For the UI
+impl Action {
+    pub fn to_string(&self) -> &'static str {
+        match self {
+            Self::Fold => "Fold",
+            Self::Check => "Check/Pass",
+            Self::Open => "Open/Bet",
+            Self::Call => "Call",
+            Self::Raise => "Raise",
         }
     }
-} */
+}
 
 // TODO: Add check to make sure player has enough chips, handle case
 pub fn open(
@@ -102,6 +102,8 @@ impl Player {
             name: name,
             hand: [
                 // Is there a better way to intialize this array?
+                // Could probably be changed to a vector without any
+                // significant overhead?
                 Card::new(Rank::Five, Suit::Clubs),
                 Card::new(Rank::Three, Suit::Hearts),
                 Card::new(Rank::Two, Suit::Diamonds),
