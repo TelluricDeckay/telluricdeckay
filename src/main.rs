@@ -52,9 +52,12 @@ fn main() -> Result<(), io::Error> {
                 player::Player::new("John"),
             ];
 
+            let n = players.len();
+
             // The host will select to start the game
             game::Game {
                 players: players,
+                number_of_players: n,
                 pot: 0,
                 initial_bet_plus_raises: 0,
                 deck: Card::get_deck(),
@@ -66,8 +69,6 @@ fn main() -> Result<(), io::Error> {
 
             // println!("{:?}", game);
         };
-
-        let number_of_players = new_game.players.len();
 
         // Ante
         for pl in new_game.players.iter_mut() {
@@ -96,8 +97,8 @@ fn main() -> Result<(), io::Error> {
                 // println!();
 
                 if (pl.total_amount_added_this_round == new_game.initial_bet_plus_raises
-                    && new_game.turns_this_round > number_of_players)
-                    || (new_game.turns_this_round == number_of_players
+                    && new_game.turns_this_round > new_game.number_of_players)
+                    || (new_game.turns_this_round == new_game.number_of_players
                         && new_game.initial_bet_plus_raises == 0)
                 {
                     new_game.all_bets_paid = true;

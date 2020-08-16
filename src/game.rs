@@ -1,9 +1,10 @@
-use crate::player::{Action, Player};
+use crate::player::Player;
 use ionic_deckhandler::Card;
 
 #[derive(Debug)]
 pub struct Game {
     pub players: Vec<Player>,
+    pub number_of_players: usize,
     pub pot: i32,
     pub initial_bet_plus_raises: i32,
     pub deck: Vec<Card>,
