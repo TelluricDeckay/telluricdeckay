@@ -60,9 +60,6 @@ fn main() -> Result<(), io::Error> {
                 deck: Card::get_deck(),
                 card_dealing: game::CardDealing::FiveCardDraw,
                 previous_player: None,
-
-                // Only used to init the game. The action is changed the first time a player executes a turn.
-                previous_player_action: player::Action::Fold,
                 turns_this_round: 0,
                 all_bets_paid: false,
             }
@@ -134,7 +131,6 @@ fn main() -> Result<(), io::Error> {
 
                         match input {
                             player::Action::Open => {
-                                new_game.previous_player_action = input;
                                 let input_open = 5;
                                 player::open(
                                     input_open,
@@ -152,7 +148,6 @@ fn main() -> Result<(), io::Error> {
                             // until the end. They don't have to show their cards.
                             //
                             player::Action::Check => {
-                                new_game.previous_player_action = input;
                                 println!("{} checks.", pl.name);
                             }
                             _ => println!("!Condition mismatch 1"), // The UI should only allow the options above
@@ -167,7 +162,6 @@ fn main() -> Result<(), io::Error> {
                                 }
                                 match input {
                                     player::Action::Open => {
-                                        new_game.previous_player_action = input;
                                         let input_open = 5;
                                         player::open(
                                             input_open,
@@ -186,7 +180,6 @@ fn main() -> Result<(), io::Error> {
                                     // until the end. They don't have to show their cards.
                                     //
                                     player::Action::Check => {
-                                        new_game.previous_player_action = input;
                                         println!("{} checks.", pl.name);
                                     }
                                     _ => println!("!Condition mismatch 2"), // The UI should only allow the options above
@@ -206,7 +199,6 @@ fn main() -> Result<(), io::Error> {
                                 }
                                 match input {
                                     player::Action::Call => {
-                                        new_game.previous_player_action = input;
                                         player::call(
                                             &pl.name,
                                             &mut pl.chips,
@@ -216,7 +208,6 @@ fn main() -> Result<(), io::Error> {
                                         );
                                     }
                                     player::Action::Raise => {
-                                        new_game.previous_player_action = input;
                                         let input_raise = 8;
                                         player::raise(
                                             &pl.name,
