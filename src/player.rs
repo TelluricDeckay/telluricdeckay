@@ -76,10 +76,10 @@ pub fn raise(
 }
 
 // Players that fold shouldn't be popped from the 'players' vector;
-// the server and client needs to know about them, and throught the
-// game, and at the end, display that they folded.
+// the server and client needs to know about them throughout the
+// game, and at the end, still display that they folded.
 pub fn fold(name: &str) -> bool {
-    println!("{} Folds.", name);
+    println!("{} folds.", name);
     true
 }
 
