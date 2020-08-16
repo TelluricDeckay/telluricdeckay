@@ -160,7 +160,7 @@ fn main() -> Result<(), io::Error> {
                                     2 => input = player::Action::Check,
                                     3 => input = player::Action::Open,
                                     4 => input = player::Action::Fold,
-                                     _ => input = player::Action::Fold,
+                                    _ => input = player::Action::Fold,
                                 }
                                 match input {
                                     player::Action::Open => {
