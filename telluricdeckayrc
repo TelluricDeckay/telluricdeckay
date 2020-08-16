@@ -1,6 +1,7 @@
 PlayerNick = Tester
-Server = true
-ServerPort = 20002
+Server.true
+Server.port = 20002
+Server.listen = 0.0.0.0
 
 testing.interactive = true
 

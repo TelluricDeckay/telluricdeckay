@@ -28,13 +28,16 @@ fn main() -> Result<(), io::Error> {
 
     // Example config usage
     for i in &config_vec {
-        if i.option == "PlayerNick" {
-            config_data.player_nick = i.value.primary.clone();
-        }
-        if i.option == "testing.interactive" {
-            testing_interactive = true;
+        match i.option.as_ref() {
+            "PlayerNick" => config_data.player_nick = i.value.primary.clone(),
+            "testing.interactive" => testing_interactive = true,
+
+            // Needs conversion from str to i32
+            // "Server.port" => config_data.server_port = i.value.primary.clone(),
+            _ => (), // Not yet handled.
         }
     }
+
     println!("Player Nick is {}", config_data.player_nick);
 
     for _test_games in 0..4 {
