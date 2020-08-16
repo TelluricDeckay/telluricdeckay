@@ -59,12 +59,9 @@ fn main() -> Result<(), io::Error> {
                 players: players,
                 number_of_players: n,
                 pot: 0,
-                initial_bet_plus_raises: 0,
                 deck: Card::get_deck(),
                 card_dealing: game::CardDealing::FiveCardDraw,
-                previous_player: None,
-                turns_this_round: 0,
-                all_bets_paid: false,
+                round: game::BettingRound::new(),
             }
 
             // println!("{:?}", game);
@@ -88,32 +85,32 @@ fn main() -> Result<(), io::Error> {
             }
         }
 
-        while new_game.all_bets_paid == false {
+        while new_game.round.all_bets_paid == false {
             let mut input: player::Action;
             for pl in new_game.players.iter_mut() {
                 // println!("{:?}-{:?}", &new_game.initial_bet_plus_raises, &pl.total_amount_added_this_round);
-                // println!("{:?}", &new_game.turns_this_round);
+                // println!("{:?}", &new_game.roundturns_this_round);
                 // println!("pot - {:?}", &new_game.pot);
                 // println!();
 
-                if (pl.total_amount_added_this_round == new_game.initial_bet_plus_raises
-                    && new_game.turns_this_round > new_game.number_of_players)
-                    || (new_game.turns_this_round == new_game.number_of_players
-                        && new_game.initial_bet_plus_raises == 0)
+                if (pl.total_amount_added_this_round == new_game.round.initial_bet_plus_raises
+                    && new_game.round.turns > new_game.number_of_players)
+                    || (new_game.round.turns == new_game.number_of_players
+                        && new_game.round.initial_bet_plus_raises == 0)
                 {
-                    new_game.all_bets_paid = true;
+                    new_game.round.all_bets_paid = true;
                     break;
                 }
 
-                new_game.turns_this_round += 1;
+                new_game.round.turns += 1;
 
                 if pl.has_folded {
                     continue;
                 }
-                match new_game.previous_player {
+                match new_game.round.previous_player {
                     None => {
                         input = player::Action::Check;
-                        new_game.previous_player = Some(*pl);
+                        new_game.round.previous_player = Some(*pl);
 
                         // The proper conversions will need to be done for this to work
                         //
@@ -138,11 +135,11 @@ fn main() -> Result<(), io::Error> {
                                     input_open,
                                     &mut pl.chips,
                                     &mut pl.total_amount_added_this_round,
-                                    &mut new_game.initial_bet_plus_raises,
+                                    &mut new_game.round.initial_bet_plus_raises,
                                     &mut new_game.pot,
                                 );
                                 println!("{} opens with {}", pl.name, input_open);
-                                new_game.initial_bet_plus_raises = input_open;
+                                new_game.round.initial_bet_plus_raises = input_open;
                             }
 
                             // This player should now be allowed to still "observe" the game
@@ -154,9 +151,9 @@ fn main() -> Result<(), io::Error> {
                         }
                     }
                     _ => {
-                        match new_game.initial_bet_plus_raises == 0 {
+                        match new_game.round.initial_bet_plus_raises == 0 {
                             true => {
-                                match new_game.turns_this_round {
+                                match new_game.round.turns {
                                     2 => input = player::Action::Check,
                                     3 => input = player::Action::Open,
                                     4 => input = player::Action::Fold,
@@ -169,11 +166,11 @@ fn main() -> Result<(), io::Error> {
                                             input_open,
                                             &mut pl.chips,
                                             &mut pl.total_amount_added_this_round,
-                                            &mut new_game.initial_bet_plus_raises,
+                                            &mut new_game.round.initial_bet_plus_raises,
                                             &mut new_game.pot,
                                         );
                                         println!("{} opens with {}", pl.name, input_open);
-                                        new_game.initial_bet_plus_raises = input_open;
+                                        new_game.round.initial_bet_plus_raises = input_open;
                                     }
                                     player::Action::Fold => {
                                         pl.has_folded = player::fold(&pl.name);
@@ -185,7 +182,7 @@ fn main() -> Result<(), io::Error> {
                             }
 
                             false => {
-                                match new_game.turns_this_round {
+                                match new_game.round.turns {
                                     4 => input = player::Action::Raise,
                                     5 => input = player::Action::Call,
                                     6 => input = player::Action::Raise,
@@ -201,7 +198,7 @@ fn main() -> Result<(), io::Error> {
                                             &pl.name,
                                             &mut pl.chips,
                                             &mut pl.total_amount_added_this_round,
-                                            &new_game.initial_bet_plus_raises,
+                                            &new_game.round.initial_bet_plus_raises,
                                             &mut new_game.pot,
                                         );
                                     }
@@ -212,7 +209,7 @@ fn main() -> Result<(), io::Error> {
                                             &input_raise,
                                             &mut pl.chips,
                                             &mut pl.total_amount_added_this_round,
-                                            &mut new_game.initial_bet_plus_raises,
+                                            &mut new_game.round.initial_bet_plus_raises,
                                             &mut new_game.pot,
                                         );
                                     }
