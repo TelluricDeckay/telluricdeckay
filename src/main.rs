@@ -94,19 +94,20 @@ fn main() -> Result<(), io::Error> {
                 // println!("{:?}", &new_game.turns_this_round);
                 // println!("pot - {:?}", &new_game.pot);
                 // println!();
-                new_game.turns_this_round += 1;
-
-                if pl.has_folded {
-                    continue;
-                }
 
                 if (pl.total_amount_added_this_round == new_game.initial_bet_plus_raises
-                    && new_game.turns_this_round > number_of_players
-                    || new_game.turns_this_round == number_of_players
+                    && new_game.turns_this_round > number_of_players)
+                    || (new_game.turns_this_round == number_of_players
                         && new_game.initial_bet_plus_raises == 0)
                 {
                     new_game.all_bets_paid = true;
                     break;
+                }
+
+                new_game.turns_this_round += 1;
+
+                if pl.has_folded {
+                    continue;
                 }
                 match new_game.previous_player {
                     None => {
@@ -158,7 +159,9 @@ fn main() -> Result<(), io::Error> {
                             true => {
                                 match new_game.turns_this_round {
                                     2 => input = player::Action::Check,
-                                    _ => input = player::Action::Open,
+                                    3 => input = player::Action::Open,
+                                    4 => input = player::Action::Fold,
+                                     _ => input = player::Action::Fold,
                                 }
                                 match input {
                                     player::Action::Open => {
