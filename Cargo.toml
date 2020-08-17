@@ -17,4 +17,4 @@ configster = "0.1.1"
 ionic_deckhandler = { git = "https://github.com/TelluricDeckay/ionic-deckhandler", branch = "trunk" }
 
 #telluric-handeval = { path = "../telluric-handeval" }
-telluric-handeval = { git = "https://github.com/TelluricDeckay/telluric-handeval", branch = "handeval" }
+telluric-handeval = { git = "https://github.com/TelluricDeckay/telluric-handeval", branch = "trunk" }

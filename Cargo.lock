@@ -235,7 +235,7 @@ dependencies = [
 [[package]]
 name = "telluric-handeval"
 version = "0.1.0"
-source = "git+https://github.com/TelluricDeckay/telluric-handeval?branch=handeval#17ddfe7c21d432aeb991e586d31d1cda761a3ee9"
+source = "git+https://github.com/TelluricDeckay/telluric-handeval?branch=trunk#6ce17b6ea64e20ec54fe641cfe35583f1e9a5bb0"
 dependencies = [
  "ionic_deckhandler",
 ]
