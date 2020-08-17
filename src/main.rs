@@ -40,26 +40,30 @@ fn main() -> Result<(), io::Error> {
 
     println!("Player Nick is {}", config_data.player_nick);
 
+    let mut players = vec![
+        player::Player::new("Bambi"),
+        player::Player::new("Randi"),
+        player::Player::new("Candi"),
+        player::Player::new("Paul"),
+        player::Player::new("John"),
+    ];
+
+    let n = players.len();
+
     for _test_games in 0..4 {
         let mut new_game = {
             // The server will keep track of connected players.
             //
             // Connected players will select if they will be joining a pending game
 
-            // FIXME: Players should not start with the same amount of chips for every game.
-            let players = vec![
-                player::Player::new("Bambi"),
-                player::Player::new("Randi"),
-                player::Player::new("Candi"),
-                player::Player::new("Paul"),
-                player::Player::new("John"),
-            ];
-
-            let n = players.len();
+            for pl in players.iter_mut() {
+                pl.total_amount_added_this_round = 0;
+                pl.has_folded = false;
+            }
 
             // The host will select to start the game
             game::Game {
-                players: players,
+                players: &mut players,
                 number_of_players: n,
                 pot: 0,
                 deck: Card::get_deck(),

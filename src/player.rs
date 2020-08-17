@@ -110,7 +110,25 @@ impl Player {
                 Card::new(Rank::Eight, Suit::Clubs),
                 Card::new(Rank::Nine, Suit::Clubs),
             ],
-            chips: 100,
+            chips: 1000,
+            total_amount_added_this_round: 0,
+            has_folded: false,
+        }
+    }
+    pub fn reset(name: &'static str, chips: i32) -> Self {
+        Self {
+            name: name,
+            hand: [
+                // Is there a better way to intialize this array?
+                // Could probably be changed to a vector without any
+                // significant overhead?
+                Card::new(Rank::Five, Suit::Clubs),
+                Card::new(Rank::Three, Suit::Hearts),
+                Card::new(Rank::Two, Suit::Diamonds),
+                Card::new(Rank::Eight, Suit::Clubs),
+                Card::new(Rank::Nine, Suit::Clubs),
+            ],
+            chips: chips,
             total_amount_added_this_round: 0,
             has_folded: false,
         }
