@@ -85,7 +85,7 @@ dependencies = [
 [[package]]
 name = "ionic_deckhandler"
 version = "0.2.0"
-source = "git+https://github.com/TelluricDeckay/ionic-deckhandler?branch=trunk#1963c6d2c48375ad07622a9f12545c0529362e09"
+source = "git+https://github.com/TelluricDeckay/ionic-deckhandler?branch=trunk#9b76dbfd26c5ebb0f95a2984e9609cfdbcb71871"
 dependencies = [
  "rand",
 ]
@@ -235,7 +235,7 @@ dependencies = [
 [[package]]
 name = "telluric-handeval"
 version = "0.1.0"
-source = "git+https://github.com/TelluricDeckay/telluric-handeval?branch=trunk#6ce17b6ea64e20ec54fe641cfe35583f1e9a5bb0"
+source = "git+https://github.com/TelluricDeckay/telluric-handeval?branch=trunk#a6bf123903802908ebae470c286f2ae3d20587c0"
 dependencies = [
  "ionic_deckhandler",
 ]

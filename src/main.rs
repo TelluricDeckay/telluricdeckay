@@ -120,7 +120,7 @@ fn main() -> Result<(), io::Error> {
             println!(
                 "Player {} got a {} and has {} chips remaining",
                 pl.name,
-                telluric_handeval::poker::evaluate(&mut pl.hand).name(),
+                telluric_handeval::poker::evaluate(&mut pl.hand).0.name(),
                 pl.chips
             );
         }
