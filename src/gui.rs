@@ -1,7 +1,7 @@
 use iced::{
-    button, scrollable, slider, text_input, Button, Checkbox, Color, Column,
-    Container, Element, HorizontalAlignment, Image, Length, Radio, Row,
-    Sandbox, Scrollable, Settings, Slider, Space, Text, TextInput,
+    button, scrollable, slider, text_input, Button, Checkbox, Color, Column, Container, Element,
+    HorizontalAlignment, Image, Length, Radio, Row, Sandbox, Scrollable, Settings, Slider, Space,
+    Text, TextInput,
 };
 
 pub struct Gui {
@@ -26,7 +26,7 @@ impl Sandbox for Gui {
     }
 
     fn title(&self) -> String {
-        format!("{} - Iced", self.steps.title())
+        format!("{} - {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"))
     }
 
     fn update(&mut self, event: Message) {
@@ -86,8 +86,8 @@ impl Sandbox for Gui {
             content
         };
 
-        let scrollable = Scrollable::new(scroll)
-            .push(Container::new(content).width(Length::Fill).center_x());
+        let scrollable =
+            Scrollable::new(scroll).push(Container::new(content).width(Length::Fill).center_x());
 
         Container::new(scrollable)
             .height(Length::Fill)
@@ -113,6 +113,11 @@ impl Steps {
         Steps {
             steps: vec![
                 Step::Welcome,
+                Step::Radio { selection: None },
+                Step::Image {
+                    width: 300,
+                    slider: slider::State::new(),
+                },
                 Step::Slider {
                     state: slider::State::new(),
                     value: 50,
@@ -127,11 +132,6 @@ impl Steps {
                     size: 30,
                     color_sliders: [slider::State::new(); 3],
                     color: Color::BLACK,
-                },
-                Step::Radio { selection: None },
-                Step::Image {
-                    width: 300,
-                    slider: slider::State::new(),
                 },
                 Step::Scrollable,
                 Step::TextInput {
@@ -171,8 +171,7 @@ impl Steps {
     }
 
     fn can_continue(&self) -> bool {
-        self.current + 1 < self.steps.len()
-            && self.steps[self.current].can_continue()
+        self.current + 1 < self.steps.len() && self.steps[self.current].can_continue()
     }
 
     fn title(&self) -> &str {
@@ -198,7 +197,7 @@ enum Step {
         color: Color,
     },
     Radio {
-        selection: Option<Language>,
+        selection: Option<GameType>,
     },
     Image {
         width: u16,
@@ -221,7 +220,7 @@ pub enum StepMessage {
     SpacingChanged(u16),
     TextSizeChanged(u16),
     TextColorChanged(Color),
-    LanguageSelected(Language),
+    GameTypeSelected(GameType),
     ImageWidthChanged(u16),
     InputChanged(String),
     ToggleSecureInput(bool),
@@ -236,9 +235,9 @@ impl<'a> Step {
                     *debug = value;
                 }
             }
-            StepMessage::LanguageSelected(language) => {
+            StepMessage::GameTypeSelected(game_type) => {
                 if let Step::Radio { selection } = self {
-                    *selection = Some(language);
+                    *selection = Some(game_type);
                 }
             }
             StepMessage::SliderChanged(new_value) => {
@@ -302,7 +301,7 @@ impl<'a> Step {
     fn can_continue(&self) -> bool {
         match self {
             Step::Welcome => true,
-            Step::Radio { selection } => *selection == Some(Language::Rust),
+            Step::Radio { selection } => *selection == Some(GameType::FiveCardDraw),
             Step::Slider { .. } => true,
             Step::Text { .. } => true,
             Step::Image { .. } => true,
@@ -376,10 +375,7 @@ impl<'a> Step {
             ))
     }
 
-    fn slider(
-        state: &'a mut slider::State,
-        value: u8,
-    ) -> Column<'a, StepMessage> {
+    fn slider(state: &'a mut slider::State, value: u8) -> Column<'a, StepMessage> {
         Self::container("Slider")
             .push(Text::new(
                 "A slider allows you to smoothly select a value from a range \
@@ -407,12 +403,7 @@ impl<'a> Step {
         spacing_slider: &'a mut slider::State,
         spacing: u16,
     ) -> Column<'a, StepMessage> {
-        let row_radio = Radio::new(
-            Layout::Row,
-            "Row",
-            Some(layout),
-            StepMessage::LayoutChanged,
-        );
+        let row_radio = Radio::new(Layout::Row, "Row", Some(layout), StepMessage::LayoutChanged);
 
         let column_radio = Radio::new(
             Layout::Column,
@@ -475,9 +466,7 @@ impl<'a> Step {
             .padding(20)
             .spacing(20)
             .push(Text::new("You can change its size:"))
-            .push(
-                Text::new(&format!("This text is {} pixels", size)).size(size),
-            )
+            .push(Text::new(&format!("This text is {} pixels", size)).size(size))
             .push(Slider::new(
                 size_slider,
                 10..=70,
@@ -509,40 +498,30 @@ impl<'a> Step {
             .push(color_section)
     }
 
-    fn radio(selection: Option<Language>) -> Column<'a, StepMessage> {
+    fn radio(selection: Option<GameType>) -> Column<'a, StepMessage> {
         let question = Column::new()
             .padding(20)
             .spacing(10)
-            .push(Text::new("Iced is written in...").size(24))
-            .push(Language::all().iter().cloned().fold(
+            .push(Text::new("Select Game Type").size(24))
+            .push(GameType::all().iter().cloned().fold(
                 Column::new().padding(10).spacing(20),
-                |choices, language| {
+                |choices, game_type| {
                     choices.push(Radio::new(
-                        language,
-                        language,
+                        game_type,
+                        game_type,
                         selection,
-                        StepMessage::LanguageSelected,
+                        StepMessage::GameTypeSelected,
                     ))
                 },
             ));
 
-        Self::container("Radio button")
-            .push(Text::new(
-                "A radio button is normally used to represent a choice... \
-                 Surprise test!",
-            ))
-            .push(question)
-            .push(Text::new(
-                "Iced works very well with iterators! The list above is \
-                 basically created by folding a column over the different \
-                 choices, creating a radio button for each one of them!",
-            ))
+        Self::container("Game Type").push(question)
+        // "Iced works very well with iterators! The list above is \
+        // basically created by folding a column over the different \
+        // choices, creating a radio button for each one of them!", */
     }
 
-    fn image(
-        width: u16,
-        slider: &'a mut slider::State,
-    ) -> Column<'a, StepMessage> {
+    fn image(width: u16, slider: &'a mut slider::State) -> Column<'a, StepMessage> {
         Self::container("Image")
             .push(Text::new("An image that tries to keep its aspect ratio."))
             .push(ferris(width))
@@ -565,12 +544,7 @@ impl<'a> Step {
                 "Iced supports scrollable content. Try it out! Find the \
                  button further below.",
             ))
-            .push(
-                Text::new(
-                    "Tip: You can use the scrollbar to scroll down faster!",
-                )
-                .size(16),
-            )
+            .push(Text::new("Tip: You can use the scrollbar to scroll down faster!").size(16))
             .push(Column::new().height(Length::Units(4096)))
             .push(
                 Text::new("You are halfway there!")
@@ -672,10 +646,7 @@ fn ferris<'a>(width: u16) -> Container<'a, StepMessage> {
         if cfg!(target_arch = "wasm32") {
             Image::new("images/ferris.png")
         } else {
-            Image::new(format!(
-                "{}/images/ferris.png",
-                env!("CARGO_MANIFEST_DIR")
-            ))
+            Image::new(format!("{}/images/ferris.png", env!("CARGO_MANIFEST_DIR")))
         }
         .width(Length::Units(width)),
     )
@@ -683,10 +654,7 @@ fn ferris<'a>(width: u16) -> Container<'a, StepMessage> {
     .center_x()
 }
 
-fn button<'a, Message>(
-    state: &'a mut button::State,
-    label: &str,
-) -> Button<'a, Message> {
+fn button<'a, Message>(state: &'a mut button::State, label: &str) -> Button<'a, Message> {
     Button::new(
         state,
         Text::new(label).horizontal_alignment(HorizontalAlignment::Center),
@@ -707,37 +675,28 @@ fn color_slider(
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Language {
-    Rust,
-    Elm,
-    Ruby,
-    Haskell,
-    C,
-    Other,
+pub enum GameType {
+    FiveCardDraw,
+    FiveCardDoubleDraw,
+    SevenCardStud,
 }
 
-impl Language {
-    fn all() -> [Language; 6] {
+impl GameType {
+    fn all() -> [GameType; 3] {
         [
-            Language::C,
-            Language::Elm,
-            Language::Ruby,
-            Language::Haskell,
-            Language::Rust,
-            Language::Other,
+            GameType::FiveCardDraw,
+            GameType::FiveCardDoubleDraw,
+            GameType::SevenCardStud,
         ]
     }
 }
 
-impl From<Language> for String {
-    fn from(language: Language) -> String {
-        String::from(match language {
-            Language::Rust => "Rust",
-            Language::Elm => "Elm",
-            Language::Ruby => "Ruby",
-            Language::Haskell => "Haskell",
-            Language::C => "C",
-            Language::Other => "Other",
+impl From<GameType> for String {
+    fn from(game_type: GameType) -> String {
+        String::from(match game_type {
+            GameType::FiveCardDraw => "Five Card Draw",
+            GameType::FiveCardDoubleDraw => "Five Card Double Draw",
+            GameType::SevenCardStud => "Seven Card Stud",
         })
     }
 }
