@@ -10,6 +10,7 @@ license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
+iced = { git = "https://github.com/hecrj/iced", rev = "2ce5df084456a92ed1a228738816cf8398b2e918", features = ["image"] }
 structopt = "0.3.15"
 configster = "0.1.1"
 #ionic_deckhandler = { path = "../ionic-deckhandler" }
@@ -18,7 +19,3 @@ ionic_deckhandler = { git = "https://github.com/TelluricDeckay/ionic-deckhandler
 
 #telluric-handeval = { path = "../telluric-handeval" }
 telluric-handeval = { git = "https://github.com/TelluricDeckay/telluric-handeval", branch = "trunk" }
-
-[dependencies.iced]
-version = "0.1.1"
-features = ["svg"]
