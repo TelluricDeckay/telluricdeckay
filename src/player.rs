@@ -12,7 +12,7 @@ pub enum Action {
 
 // For the UI
 impl Action {
-    pub fn to_string(&self) -> &'static str {
+    pub fn stringify(&self) -> &'static str {
         match self {
             Self::Fold => "Fold",
             Self::Check => "Check/Pass",
