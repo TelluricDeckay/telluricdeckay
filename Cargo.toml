@@ -18,3 +18,7 @@ ionic_deckhandler = { git = "https://github.com/TelluricDeckay/ionic-deckhandler
 
 #telluric-handeval = { path = "../telluric-handeval" }
 telluric-handeval = { git = "https://github.com/TelluricDeckay/telluric-handeval", branch = "trunk" }
+
+[dependencies.iced]
+version = "0.1.1"
+features = ["svg"]
