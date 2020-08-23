@@ -1,15 +1,14 @@
 mod config;
 mod game;
 mod player;
+use iced::Sandbox;
 use ionic_deckhandler::{Card, Deck};
 use std::io;
 use structopt::StructOpt;
 use telluricdeckay::cli_options;
-use iced::Sandbox;
 mod gui;
 
 fn main() -> Result<(), io::Error> {
-
     gui::Gui::run(iced::Settings::default());
     // Some of this code for checking options and getting the configuration
     // can likely get moved to separate modules later.
