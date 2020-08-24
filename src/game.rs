@@ -1,6 +1,6 @@
 use crate::gui::{self, StepMessage};
 use crate::player::{self, Player};
-use iced::{Checkbox, Column, Container, Text, Svg, Length};
+use iced::{Checkbox, Column, Container, Length, Svg, Text};
 use ionic_deckhandler::{Card, Deck};
 
 #[derive(Debug)]
@@ -121,9 +121,14 @@ pub fn start<'a>() -> Column<'a, StepMessage> {
 
     gui::Step::container("Game Start")
         .push(Text::new("(Test) Game Start"))
-        .push(Svg::from_path(format!(
-            "{}/assets/cards/AS.svg",
-            env!("CARGO_MANIFEST_DIR"))).width(Length::Units(100)).height(Length::Units(100)))
+        .push(
+            Svg::from_path(format!(
+                "{}/assets/cards/AS.svg",
+                env!("CARGO_MANIFEST_DIR")
+            ))
+            .width(Length::Units(100))
+            .height(Length::Units(100)),
+        )
         .push(Text::new(format!("{:?}", new_game.players[0].hand)))
 }
 
