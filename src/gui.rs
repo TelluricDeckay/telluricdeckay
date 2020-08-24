@@ -1,4 +1,5 @@
 use crate::config;
+use crate::game;
 
 use iced::{
     button, scrollable, slider, text_input, Button, Checkbox, Color, Column, Container, Element,
@@ -122,6 +123,7 @@ impl Steps {
             steps: vec![
                 Step::Welcome,
                 Step::Radio { selection: None },
+                Step::GameSetup,
                 Step::Image {
                     width: 300,
                     slider: slider::State::new(),
@@ -187,8 +189,12 @@ impl Steps {
     }
 }
 
-enum Step {
+pub enum Step {
     Welcome,
+    Radio {
+        selection: Option<GameType>,
+    },
+    GameSetup,
     Slider {
         state: slider::State,
         value: u8,
@@ -203,9 +209,6 @@ enum Step {
         size: u16,
         color_sliders: [slider::State; 3],
         color: Color,
-    },
-    Radio {
-        selection: Option<GameType>,
     },
     Image {
         width: u16,
@@ -295,6 +298,7 @@ impl<'a> Step {
         match self {
             Step::Welcome => "Welcome",
             Step::Radio { .. } => "Radio button",
+            Step::GameSetup => "Start Game",
             Step::Slider { .. } => "Slider",
             Step::Text { .. } => "Text",
             Step::Image { .. } => "Image",
@@ -310,6 +314,7 @@ impl<'a> Step {
         match self {
             Step::Welcome => true,
             Step::Radio { selection } => *selection == Some(GameType::FiveCardDraw),
+            Step::GameSetup => true,
             Step::Slider { .. } => true,
             Step::Text { .. } => true,
             Step::Image { .. } => true,
@@ -325,6 +330,7 @@ impl<'a> Step {
         match self {
             Step::Welcome => Self::welcome(&config_data),
             Step::Radio { selection } => Self::radio(*selection),
+            Step::GameSetup => Self::game_start(),
             Step::Slider { state, value } => Self::slider(state, *value),
             Step::Text {
                 size_slider,
@@ -350,7 +356,7 @@ impl<'a> Step {
         .into()
     }
 
-    fn container(title: &str) -> Column<'a, StepMessage> {
+    pub fn container(title: &str) -> Column<'a, StepMessage> {
         Column::new().spacing(20).push(Text::new(title).size(50))
     }
 
@@ -370,6 +376,10 @@ impl<'a> Step {
                 "Maximum raises per betting round: {}",
                 config_data.max_raises
             )))
+    }
+
+    fn game_start() -> Column<'a, StepMessage> {
+        game::start()
     }
 
     fn slider(state: &'a mut slider::State, value: u8) -> Column<'a, StepMessage> {

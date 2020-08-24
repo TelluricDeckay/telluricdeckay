@@ -1,14 +1,124 @@
+use crate::gui::{self, StepMessage};
 use crate::player::{self, Player};
-// use crate::player;
-use ionic_deckhandler::Card;
+use iced::{Checkbox, Column, Container, Text};
+use ionic_deckhandler::{Card, Deck};
 
 #[derive(Debug)]
-pub struct Game<'a> {
-    pub players: &'a mut Vec<Player>,
+pub struct Game {
+    pub players: Vec<Player>,
     pub number_of_players: usize,
     pub pot: i32,
     pub deck: Vec<Card>,
     pub round: BettingRound,
+}
+
+impl Game {
+    pub fn new() -> Self {
+        Self {
+            players: Vec::<Player>::new(),
+            number_of_players: 0,
+            pot: 0,
+            deck: Card::get_deck(),
+            round: BettingRound::new(),
+        }
+    }
+}
+
+pub fn start<'a>() -> Column<'a, StepMessage> {
+    let mut players = vec![
+        player::Player::new("Bambi"),
+        player::Player::new("Randi"),
+        player::Player::new("Candi"),
+        player::Player::new("Paul"),
+        player::Player::new("John"),
+    ];
+
+    // TODO: The server will keep track of connected players.
+
+    let mut new_game = Game::new();
+
+    // reset some values for players before the next hand is dealt.
+    for pl in players.iter_mut() {
+        pl.total_amount_added_this_round = 0;
+        pl.has_folded = false;
+        // TODO: When a player connects, they will be added to the new_game.players Vector
+        new_game.players.push(*pl);
+    }
+
+    new_game.number_of_players = new_game.players.len();
+
+    new_game.deck.shuffle_deck();
+
+    let input_game_variation = CardDealing::FiveCardDraw;
+    match input_game_variation {
+        CardDealing::FiveCardDraw => {
+            // Deal the cards
+            for i in 0..5 {
+                for pl in new_game.players.iter_mut() {
+                    pl.hand[i] = new_game
+                        .deck
+                        .take_from_top()
+                        .expect("Error: deck is empty!");
+                }
+            }
+
+            ante(&mut new_game);
+            round(&mut new_game);
+            // discard/draw
+            // another round
+            // showdown
+        }
+        CardDealing::SevenCardStud => {
+            ()
+            // deal
+            // round
+            // deal a card face up to each player
+            // round
+            // deal a card face up to each player
+            // round
+            // deal a card face up to each player
+            // round
+            // deal a card face DOWN to each player
+            // round
+            // showdown
+        }
+        _ => (),
+    }
+
+    // TODO: Don't show the hands for players that folded
+
+    // Showdown
+    println!("Total in pot = ${}", new_game.pot);
+    for pl in new_game.players.iter_mut() {
+        println!(
+            "Player {} got a {} and has {} chips remaining",
+            pl.name,
+            telluric_handeval::poker::evaluate(&mut pl.hand).0.name(),
+            pl.chips
+        );
+    }
+    println!();
+    /* let question = Column::new()
+    .padding(20)
+    .spacing(10)
+    .push(Text::new("Select Game Type").size(24))
+    .push(GameType::all().iter().cloned().fold(
+        Column::new().padding(10).spacing(20),
+        |choices, game_type| {
+            choices.push(Radio::new(
+                game_type,
+                game_type,
+                selection,
+                StepMessage::GameTypeSelected,
+            ))
+        },
+    )); */
+
+    // TODO: Checkboxes for each card needed here
+
+    gui::Step::container("Game Start")
+        .push(Text::new("(Test) Game Start"))
+        .push(Text::new(format!("{:?}", new_game.players[0].hand)))
 }
 
 #[derive(Debug)]
