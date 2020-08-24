@@ -8,7 +8,7 @@ pub fn get_filename(opt_cfg: Option<String>) -> String {
     opt_cfg.unwrap()
 }
 
-// TODO change to enum
+// TODO change to enum and add stringification
 pub struct Data {
     pub player_nick: String,
     pub is_server: bool,
