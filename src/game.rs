@@ -1,7 +1,46 @@
 use crate::gui::{self, StepMessage};
 use crate::player::{self, Player};
-use iced::{Checkbox, Column, Container, Length, Svg, Text};
-use ionic_deckhandler::{Card, Deck};
+use iced::{Checkbox, Column, Length, Svg, Text, Row};
+use ionic_deckhandler::{Card, Deck, Rank, Suit};
+
+
+// Card display.
+fn card_img(card_name: &str) -> Svg {
+    Svg::from_path(format!(
+        "{}/assets/cards/{}",
+        env!("CARGO_MANIFEST_DIR"), card_name
+    ))
+    .width(Length::Units(100))
+    .height(Length::Units(100))
+}
+
+trait CardToImg {
+    fn get_card_img(&self) -> Svg;
+}
+
+impl CardToImg for Card {
+    fn get_card_img(&self) -> Svg {
+        match *self {
+            Card { rank: Rank::Ace, suit: Suit::Spades } => card_img("AS.svg"),
+            Card { rank: Rank::Jack, suit: Suit::Spades } => card_img("JS.svg"),
+            Card { rank: Rank::Queen, suit: Suit::Spades } => card_img("QS.svg"),
+            Card { rank: Rank::King, suit: Suit::Spades } => card_img("KS.svg"),
+            Card { rank: Rank::Ten, suit: Suit::Spades } => card_img("TS.svg"),
+            // Add more cards here.
+            _ => panic!("card image missing"),
+        }
+    }
+}
+
+trait HandToImgs {
+    fn get_hand_imgs(&self) -> Vec<Svg>;
+}
+
+impl HandToImgs for [Card] {
+    fn get_hand_imgs(&self) -> Vec<Svg> {
+        self.iter().map(|c| c.get_card_img()).collect()
+    }
+}
 
 #[derive(Debug)]
 pub struct Game {
@@ -119,17 +158,29 @@ pub fn start<'a>() -> Column<'a, StepMessage> {
 
     // TODO: Checkboxes for each card needed here
 
-    gui::Step::container("Game Start")
+    let test_hand = [
+        Card { rank: Rank::Ace, suit: Suit::Spades },
+        Card { rank: Rank::Jack, suit: Suit::Spades },
+        Card { rank: Rank::Queen, suit: Suit::Spades },
+        Card { rank: Rank::King, suit: Suit::Spades },
+        Card { rank: Rank::Ten, suit: Suit::Spades }
+    ];
+    
+    let container = gui::Step::container("Game Start")
         .push(Text::new("(Test) Game Start"))
-        .push(
-            Svg::from_path(format!(
-                "{}/assets/cards/AS.svg",
-                env!("CARGO_MANIFEST_DIR")
-            ))
-            .width(Length::Units(100))
-            .height(Length::Units(100)),
-        )
-        .push(Text::new(format!("{:?}", new_game.players[0].hand)))
+        // I've copied this code above!
+        // .push(
+        //     Svg::from_path(format!(
+        //         "{}/assets/cards/AS.svg",
+        //         env!("CARGO_MANIFEST_DIR")
+        //     ))
+        //     .width(Length::Units(100))
+        //     .height(Length::Units(100)),
+        // ) // I copied this code above.
+        .push(Text::new(format!("{:?}", new_game.players[0].hand)));
+    
+    // Create row of cards.
+    container.push(test_hand.get_hand_imgs().into_iter().fold(Row::new(), |acc, img| acc.push(img)))
 }
 
 #[derive(Debug)]
