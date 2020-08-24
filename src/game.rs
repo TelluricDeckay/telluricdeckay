@@ -1,6 +1,6 @@
 use crate::gui::{self, StepMessage};
 use crate::player::{self, Player};
-use iced::{Checkbox, Column, Container, Text};
+use iced::{Checkbox, Column, Container, Text, Svg, Length};
 use ionic_deckhandler::{Card, Deck};
 
 #[derive(Debug)]
@@ -41,7 +41,8 @@ pub fn start<'a>() -> Column<'a, StepMessage> {
     for pl in players.iter_mut() {
         pl.total_amount_added_this_round = 0;
         pl.has_folded = false;
-        // TODO: When a player connects, they will be added to the new_game.players Vector
+        // TODO: When a player connects, a new Player struct will be created and they'll
+        //  be added to the new_game.players Vector
         new_game.players.push(*pl);
     }
 
@@ -50,6 +51,7 @@ pub fn start<'a>() -> Column<'a, StepMessage> {
     new_game.deck.shuffle_deck();
 
     let input_game_variation = CardDealing::FiveCardDraw;
+    // Each of these cases will likely get moved to the Gui file as a "Step"
     match input_game_variation {
         CardDealing::FiveCardDraw => {
             // Deal the cards
@@ -98,6 +100,7 @@ pub fn start<'a>() -> Column<'a, StepMessage> {
         );
     }
     println!();
+
     /* let question = Column::new()
     .padding(20)
     .spacing(10)
@@ -118,6 +121,9 @@ pub fn start<'a>() -> Column<'a, StepMessage> {
 
     gui::Step::container("Game Start")
         .push(Text::new("(Test) Game Start"))
+        .push(Svg::from_path(format!(
+            "{}/assets/cards/AS.svg",
+            env!("CARGO_MANIFEST_DIR"))).width(Length::Units(100)).height(Length::Units(100)))
         .push(Text::new(format!("{:?}", new_game.players[0].hand)))
 }
 
