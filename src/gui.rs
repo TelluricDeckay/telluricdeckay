@@ -1,3 +1,5 @@
+use crate::config;
+
 use iced::{
     button, scrollable, slider, text_input, Button, Checkbox, Color, Column, Container, Element,
     HorizontalAlignment, Image, Length, Radio, Row, Sandbox, Scrollable, Settings, Slider, Space,
@@ -10,6 +12,7 @@ pub struct Gui {
     back_button: button::State,
     next_button: button::State,
     debug: bool,
+    config_data: config::Data,
 }
 
 impl Sandbox for Gui {
@@ -22,6 +25,7 @@ impl Sandbox for Gui {
             back_button: button::State::new(),
             next_button: button::State::new(),
             debug: false,
+            config_data: config::get(),
         }
     }
 
@@ -76,7 +80,11 @@ impl Sandbox for Gui {
             .max_width(540)
             .spacing(20)
             .padding(20)
-            .push(steps.view(self.debug).map(Message::StepMessage))
+            .push(
+                steps
+                    .view(self.debug, &self.config_data)
+                    .map(Message::StepMessage),
+            )
             .push(controls)
             .into();
 
@@ -150,8 +158,8 @@ impl Steps {
         self.steps[self.current].update(msg, debug);
     }
 
-    fn view(&mut self, debug: bool) -> Element<StepMessage> {
-        self.steps[self.current].view(debug)
+    fn view(&mut self, debug: bool, config_data: &config::Data) -> Element<StepMessage> {
+        self.steps[self.current].view(debug, &config_data)
     }
 
     fn advance(&mut self) {
@@ -313,9 +321,9 @@ impl<'a> Step {
         }
     }
 
-    fn view(&mut self, debug: bool) -> Element<StepMessage> {
+    fn view(&mut self, debug: bool, config_data: &config::Data) -> Element<StepMessage> {
         match self {
-            Step::Welcome => Self::welcome(),
+            Step::Welcome => Self::welcome(&config_data),
             Step::Radio { selection } => Self::radio(*selection),
             Step::Slider { state, value } => Self::slider(state, *value),
             Step::Text {
@@ -346,33 +354,22 @@ impl<'a> Step {
         Column::new().spacing(20).push(Text::new(title).size(50))
     }
 
-    fn welcome() -> Column<'a, StepMessage> {
+    fn welcome(config_data: &config::Data) -> Column<'a, StepMessage> {
         Self::container("Welcome!")
-            .push(Text::new(
-                "This is a simple tour meant to showcase a bunch of widgets \
-                 that can be easily implemented on top of Iced.",
-            ))
-            .push(Text::new(
-                "Iced is a cross-platform GUI library for Rust focused on \
-                 simplicity and type-safety. It is heavily inspired by Elm.",
-            ))
-            .push(Text::new(
-                "It was originally born as part of Coffee, an opinionated \
-                 2D game engine for Rust.",
-            ))
-            .push(Text::new(
-                "On native platforms, Iced provides by default a renderer \
-                 built on top of wgpu, a graphics library supporting Vulkan, \
-                 Metal, DX11, and DX12.",
-            ))
-            .push(Text::new(
-                "Additionally, this tour can also run on WebAssembly thanks \
-                 to dodrio, an experimental VDOM library for Rust.",
-            ))
-            .push(Text::new(
-                "You will need to interact with the UI in order to reach the \
-                 end!",
-            ))
+            .push(Text::new(format!("Hello, {}", config_data.player_nick)))
+            .push(Text::new("Server configuration:"))
+            .push(Text::new(format!(
+                "Maximum players allowed per game: {}",
+                config_data.max_players
+            )))
+            .push(Text::new(format!(
+                "Maximum bet per betting round: {}",
+                config_data.max_bet
+            )))
+            .push(Text::new(format!(
+                "Maximum raises per betting round: {}",
+                config_data.max_raises
+            )))
     }
 
     fn slider(state: &'a mut slider::State, value: u8) -> Column<'a, StepMessage> {
