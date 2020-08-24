@@ -4,44 +4,12 @@ mod player;
 use iced::Sandbox;
 use ionic_deckhandler::{Card, Deck};
 use std::io;
-use structopt::StructOpt;
-use telluricdeckay::cli_options;
 mod gui;
 
 fn main() -> Result<(), io::Error> {
     gui::Gui::run(iced::Settings::default());
-    // Some of this code for checking options and getting the configuration
-    // can likely get moved to separate modules later.
-    let mut config_data = config::Data::new();
 
-    let opt = cli_options::Opt::from_args();
-
-    if opt.version {
-        cli_options::get_version();
-    }
-
-    // This var is also used when cli options are parsed
-    let mut testing_interactive: bool = false;
-    if opt.interactive {
-        testing_interactive = true;
-    }
-
-    let config_file = crate::config::get_filename(opt.custom_config_file);
-    let config_vec = configster::parse_file(&config_file, ',')?;
-
-    // Example config usage
-    for i in &config_vec {
-        match i.option.as_ref() {
-            "PlayerNick" => config_data.player_nick = i.value.primary.clone(),
-            "testing.interactive" => testing_interactive = true,
-
-            // Needs conversion from str to i32
-            // "Server.port" => config_data.server_port = i.value.primary.clone(),
-            _ => (), // Not yet handled.
-        }
-    }
-
-    println!("Player Nick is {}", config_data.player_nick);
+    // println!("Player Nick is {}", config_data.player_nick);
 
     let mut players = vec![
         player::Player::new("Bambi"),
