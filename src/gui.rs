@@ -508,6 +508,7 @@ impl<'a> Step {
     }
 
     fn radio(selection: Option<GameType>) -> Column<'a, StepMessage> {
+        // TODO: Only the server should get this menu
         let question = Column::new()
             .padding(20)
             .spacing(10)

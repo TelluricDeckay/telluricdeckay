@@ -361,28 +361,6 @@ pub fn start(new_game: &mut Game) {
 
 // TODO: Checkboxes for each card needed here
 pub fn view_hand<'a>(player_hand: &[Card; 5]) -> Column<'a, StepMessage> {
-    let test_hand = [
-        Card {
-            rank: Rank::Ace,
-            suit: Suit::Spades,
-        },
-        Card {
-            rank: Rank::King,
-            suit: Suit::Spades,
-        },
-        Card {
-            rank: Rank::Queen,
-            suit: Suit::Spades,
-        },
-        Card {
-            rank: Rank::Jack,
-            suit: Suit::Spades,
-        },
-        Card {
-            rank: Rank::Ten,
-            suit: Suit::Spades,
-        },
-    ];
 
     let container = gui::Step::container("Game Start").push(Text::new("(Test) Game Start"));
 
