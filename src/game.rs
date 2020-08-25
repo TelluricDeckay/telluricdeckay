@@ -73,7 +73,7 @@ impl CardToImg for Card {
                 rank: Rank::Two,
                 suit: Suit::Spades,
             } => card_img("2S.svg"),
-           Card {
+            Card {
                 rank: Rank::Ace,
                 suit: Suit::Hearts,
             } => card_img("AH.svg"),
@@ -360,7 +360,7 @@ pub fn start(new_game: &mut Game) {
 )); */
 
 // TODO: Checkboxes for each card needed here
-pub fn view_hand<'a>() -> Column<'a, StepMessage> {
+pub fn view_hand<'a>(player_hand: &[Card; 5]) -> Column<'a, StepMessage> {
     let test_hand = [
         Card {
             rank: Rank::Ace,
@@ -385,11 +385,10 @@ pub fn view_hand<'a>() -> Column<'a, StepMessage> {
     ];
 
     let container = gui::Step::container("Game Start").push(Text::new("(Test) Game Start"));
-    //.push(Text::new(format!("{:?}", new_game.players[0].hand)));
 
     // Create row of cards.
     container.push(
-        test_hand
+        player_hand
             .get_hand_imgs()
             .into_iter()
             .fold(Row::new(), |acc, img| acc.push(img)),
