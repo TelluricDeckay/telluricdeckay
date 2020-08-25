@@ -1,10 +1,11 @@
 use crate::config;
 use crate::game;
+use crate::player;
+use ionic_deckhandler::Card;
 
 use iced::{
     button, scrollable, slider, text_input, Button, Checkbox, Color, Column, Container, Element,
-    HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable, Settings, Slider, Space, Text,
-    TextInput,
+    HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable, Slider, Space, Text, TextInput,
 };
 
 pub struct Gui {
@@ -14,7 +15,7 @@ pub struct Gui {
     next_button: button::State,
     debug: bool,
     config_data: config::Data,
-    game_state: game::Game,
+    game_state: game::Game, // TODO: Only the server should be able to start a new game
 }
 
 impl Sandbox for Gui {
@@ -86,7 +87,7 @@ impl Sandbox for Gui {
             .padding(20)
             .push(
                 steps
-                    .view(self.debug, &self.config_data)
+                    .view(self.debug, &self.config_data, &mut self.game_state)
                     .map(Message::StepMessage),
             )
             .push(controls)
@@ -159,8 +160,13 @@ impl Steps {
         self.steps[self.current].update(msg, debug, game_state);
     }
 
-    fn view(&mut self, debug: bool, config_data: &config::Data) -> Element<StepMessage> {
-        self.steps[self.current].view(debug, &config_data)
+    fn view(
+        &mut self,
+        debug: bool,
+        config_data: &config::Data,
+        game_state: &mut game::Game,
+    ) -> Element<StepMessage> {
+        self.steps[self.current].view(debug, &config_data, game_state)
     }
 
     fn advance(&mut self) {
@@ -314,11 +320,16 @@ impl<'a> Step {
         }
     }
 
-    fn view(&mut self, debug: bool, config_data: &config::Data) -> Element<StepMessage> {
+    fn view(
+        &mut self,
+        debug: bool,
+        config_data: &config::Data,
+        game_state: &mut game::Game,
+    ) -> Element<StepMessage> {
         match self {
             Step::Welcome => Self::welcome(&config_data),
             Step::Radio { selection } => Self::radio(*selection),
-            Step::GameSetup => Self::view_hand(),
+            Step::GameSetup => Self::view_hand(&game_state.players[0].hand),
             Step::Slider { state, value } => Self::slider(state, *value),
             Step::Text {
                 size_slider,
@@ -369,8 +380,8 @@ impl<'a> Step {
         game::start(new_game)
     }
 
-    fn view_hand() -> Column<'a, StepMessage> {
-        game::view_hand()
+    fn view_hand(player_hand: &[Card; 5]) -> Column<'a, StepMessage> {
+        game::view_hand(player_hand)
     }
 
     fn slider(state: &'a mut slider::State, value: u8) -> Column<'a, StepMessage> {
