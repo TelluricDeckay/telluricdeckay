@@ -3,8 +3,8 @@ use crate::game;
 
 use iced::{
     button, scrollable, slider, text_input, Button, Checkbox, Color, Column, Container, Element,
-    HorizontalAlignment, Image, Length, Radio, Row, Sandbox, Scrollable, Settings, Slider, Space,
-    Text, TextInput,
+    HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable, Settings, Slider, Space, Text,
+    TextInput,
 };
 
 pub struct Gui {
@@ -14,6 +14,7 @@ pub struct Gui {
     next_button: button::State,
     debug: bool,
     config_data: config::Data,
+    game_state: game::Game,
 }
 
 impl Sandbox for Gui {
@@ -27,6 +28,7 @@ impl Sandbox for Gui {
             next_button: button::State::new(),
             debug: false,
             config_data: config::get(),
+            game_state: game::Game::new(),
         }
     }
 
@@ -43,7 +45,8 @@ impl Sandbox for Gui {
                 self.steps.advance();
             }
             Message::StepMessage(step_msg) => {
-                self.steps.update(step_msg, &mut self.debug);
+                self.steps
+                    .update(step_msg, &mut self.debug, &mut self.game_state);
             }
         }
     }
@@ -124,10 +127,6 @@ impl Steps {
                 Step::Welcome,
                 Step::Radio { selection: None },
                 Step::GameSetup,
-                Step::Image {
-                    width: 300,
-                    slider: slider::State::new(),
-                },
                 Step::Slider {
                     state: slider::State::new(),
                     value: 50,
@@ -156,8 +155,8 @@ impl Steps {
         }
     }
 
-    fn update(&mut self, msg: StepMessage, debug: &mut bool) {
-        self.steps[self.current].update(msg, debug);
+    fn update(&mut self, msg: StepMessage, debug: &mut bool, game_state: &mut game::Game) {
+        self.steps[self.current].update(msg, debug, game_state);
     }
 
     fn view(&mut self, debug: bool, config_data: &config::Data) -> Element<StepMessage> {
@@ -210,10 +209,6 @@ pub enum Step {
         color_sliders: [slider::State; 3],
         color: Color,
     },
-    Image {
-        width: u16,
-        slider: slider::State,
-    },
     Scrollable,
     TextInput {
         value: String,
@@ -232,14 +227,13 @@ pub enum StepMessage {
     TextSizeChanged(u16),
     TextColorChanged(Color),
     GameTypeSelected(GameType),
-    ImageWidthChanged(u16),
     InputChanged(String),
     ToggleSecureInput(bool),
     DebugToggled(bool),
 }
 
 impl<'a> Step {
-    fn update(&mut self, msg: StepMessage, debug: &mut bool) {
+    fn update(&mut self, msg: StepMessage, debug: &mut bool, game_state: &mut game::Game) {
         match msg {
             StepMessage::DebugToggled(value) => {
                 if let Step::Debugger = self {
@@ -249,6 +243,7 @@ impl<'a> Step {
             StepMessage::GameTypeSelected(game_type) => {
                 if let Step::Radio { selection } = self {
                     *selection = Some(game_type);
+                    Self::game_start(game_state);
                 }
             }
             StepMessage::SliderChanged(new_value) => {
@@ -276,11 +271,6 @@ impl<'a> Step {
                     *spacing = new_spacing;
                 }
             }
-            StepMessage::ImageWidthChanged(new_width) => {
-                if let Step::Image { width, .. } = self {
-                    *width = new_width;
-                }
-            }
             StepMessage::InputChanged(new_value) => {
                 if let Step::TextInput { value, .. } = self {
                     *value = new_value;
@@ -301,7 +291,6 @@ impl<'a> Step {
             Step::GameSetup => "Start Game",
             Step::Slider { .. } => "Slider",
             Step::Text { .. } => "Text",
-            Step::Image { .. } => "Image",
             Step::RowsAndColumns { .. } => "Rows and columns",
             Step::Scrollable => "Scrollable",
             Step::TextInput { .. } => "Text input",
@@ -317,7 +306,6 @@ impl<'a> Step {
             Step::GameSetup => true,
             Step::Slider { .. } => true,
             Step::Text { .. } => true,
-            Step::Image { .. } => true,
             Step::RowsAndColumns { .. } => true,
             Step::Scrollable => true,
             Step::TextInput { value, .. } => !value.is_empty(),
@@ -330,7 +318,7 @@ impl<'a> Step {
         match self {
             Step::Welcome => Self::welcome(&config_data),
             Step::Radio { selection } => Self::radio(*selection),
-            Step::GameSetup => Self::game_start(),
+            Step::GameSetup => Self::view_hand(),
             Step::Slider { state, value } => Self::slider(state, *value),
             Step::Text {
                 size_slider,
@@ -338,7 +326,6 @@ impl<'a> Step {
                 color_sliders,
                 color,
             } => Self::text(size_slider, *size, color_sliders, *color),
-            Step::Image { width, slider } => Self::image(*width, slider),
             Step::RowsAndColumns {
                 layout,
                 spacing_slider,
@@ -378,8 +365,12 @@ impl<'a> Step {
             )))
     }
 
-    fn game_start() -> Column<'a, StepMessage> {
-        game::start()
+    fn game_start(new_game: &mut game::Game) {
+        game::start(new_game)
+    }
+
+    fn view_hand() -> Column<'a, StepMessage> {
+        game::view_hand()
     }
 
     fn slider(state: &'a mut slider::State, value: u8) -> Column<'a, StepMessage> {
@@ -528,23 +519,6 @@ impl<'a> Step {
         // choices, creating a radio button for each one of them!", */
     }
 
-    fn image(width: u16, slider: &'a mut slider::State) -> Column<'a, StepMessage> {
-        Self::container("Image")
-            .push(Text::new("An image that tries to keep its aspect ratio."))
-            .push(ferris(width))
-            .push(Slider::new(
-                slider,
-                100..=500,
-                width,
-                StepMessage::ImageWidthChanged,
-            ))
-            .push(
-                Text::new(&format!("Width: {} px", width.to_string()))
-                    .width(Length::Fill)
-                    .horizontal_alignment(HorizontalAlignment::Center),
-            )
-    }
-
     fn scrollable() -> Column<'a, StepMessage> {
         Self::container("Scrollable")
             .push(Text::new(
@@ -560,7 +534,6 @@ impl<'a> Step {
                     .horizontal_alignment(HorizontalAlignment::Center),
             )
             .push(Column::new().height(Length::Units(4096)))
-            .push(ferris(300))
             .push(
                 Text::new("You made it!")
                     .width(Length::Fill)
@@ -644,21 +617,6 @@ impl<'a> Step {
             ))
             .push(Text::new("Make sure to keep an eye on it!"))
     }
-}
-
-fn ferris<'a>(width: u16) -> Container<'a, StepMessage> {
-    Container::new(
-        // This should go away once we unify resource loading on native
-        // platforms
-        if cfg!(target_arch = "wasm32") {
-            Image::new("images/ferris.png")
-        } else {
-            Image::new(format!("{}/images/ferris.png", env!("CARGO_MANIFEST_DIR")))
-        }
-        .width(Length::Units(width)),
-    )
-    .width(Length::Fill)
-    .center_x()
 }
 
 fn button<'a, Message>(state: &'a mut button::State, label: &str) -> Button<'a, Message> {
