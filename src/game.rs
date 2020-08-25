@@ -26,22 +26,209 @@ impl CardToImg for Card {
                 suit: Suit::Spades,
             } => card_img("AS.svg"),
             Card {
-                rank: Rank::Jack,
+                rank: Rank::King,
                 suit: Suit::Spades,
-            } => card_img("JS.svg"),
+            } => card_img("KS.svg"),
             Card {
                 rank: Rank::Queen,
                 suit: Suit::Spades,
             } => card_img("QS.svg"),
             Card {
-                rank: Rank::King,
+                rank: Rank::Jack,
                 suit: Suit::Spades,
-            } => card_img("KS.svg"),
+            } => card_img("JS.svg"),
             Card {
                 rank: Rank::Ten,
                 suit: Suit::Spades,
             } => card_img("TS.svg"),
-            // Add more cards here.
+            Card {
+                rank: Rank::Nine,
+                suit: Suit::Spades,
+            } => card_img("9S.svg"),
+            Card {
+                rank: Rank::Eight,
+                suit: Suit::Spades,
+            } => card_img("8S.svg"),
+            Card {
+                rank: Rank::Seven,
+                suit: Suit::Spades,
+            } => card_img("7S.svg"),
+            Card {
+                rank: Rank::Six,
+                suit: Suit::Spades,
+            } => card_img("6S.svg"),
+            Card {
+                rank: Rank::Five,
+                suit: Suit::Spades,
+            } => card_img("5S.svg"),
+            Card {
+                rank: Rank::Four,
+                suit: Suit::Spades,
+            } => card_img("4S.svg"),
+            Card {
+                rank: Rank::Three,
+                suit: Suit::Spades,
+            } => card_img("3S.svg"),
+            Card {
+                rank: Rank::Two,
+                suit: Suit::Spades,
+            } => card_img("2S.svg"),
+           Card {
+                rank: Rank::Ace,
+                suit: Suit::Hearts,
+            } => card_img("AH.svg"),
+            Card {
+                rank: Rank::King,
+                suit: Suit::Hearts,
+            } => card_img("KH.svg"),
+            Card {
+                rank: Rank::Queen,
+                suit: Suit::Hearts,
+            } => card_img("QH.svg"),
+            Card {
+                rank: Rank::Jack,
+                suit: Suit::Hearts,
+            } => card_img("JH.svg"),
+            Card {
+                rank: Rank::Ten,
+                suit: Suit::Hearts,
+            } => card_img("TH.svg"),
+            Card {
+                rank: Rank::Nine,
+                suit: Suit::Hearts,
+            } => card_img("9H.svg"),
+            Card {
+                rank: Rank::Eight,
+                suit: Suit::Hearts,
+            } => card_img("8H.svg"),
+            Card {
+                rank: Rank::Seven,
+                suit: Suit::Hearts,
+            } => card_img("7H.svg"),
+            Card {
+                rank: Rank::Six,
+                suit: Suit::Hearts,
+            } => card_img("6H.svg"),
+            Card {
+                rank: Rank::Five,
+                suit: Suit::Hearts,
+            } => card_img("5H.svg"),
+            Card {
+                rank: Rank::Four,
+                suit: Suit::Hearts,
+            } => card_img("4H.svg"),
+            Card {
+                rank: Rank::Three,
+                suit: Suit::Hearts,
+            } => card_img("3H.svg"),
+            Card {
+                rank: Rank::Two,
+                suit: Suit::Hearts,
+            } => card_img("2H.svg"),
+            Card {
+                rank: Rank::Ace,
+                suit: Suit::Clubs,
+            } => card_img("AC.svg"),
+            Card {
+                rank: Rank::King,
+                suit: Suit::Clubs,
+            } => card_img("KC.svg"),
+            Card {
+                rank: Rank::Queen,
+                suit: Suit::Clubs,
+            } => card_img("QC.svg"),
+            Card {
+                rank: Rank::Jack,
+                suit: Suit::Clubs,
+            } => card_img("JC.svg"),
+            Card {
+                rank: Rank::Ten,
+                suit: Suit::Clubs,
+            } => card_img("TC.svg"),
+            Card {
+                rank: Rank::Nine,
+                suit: Suit::Clubs,
+            } => card_img("9C.svg"),
+            Card {
+                rank: Rank::Eight,
+                suit: Suit::Clubs,
+            } => card_img("8C.svg"),
+            Card {
+                rank: Rank::Seven,
+                suit: Suit::Clubs,
+            } => card_img("7C.svg"),
+            Card {
+                rank: Rank::Six,
+                suit: Suit::Clubs,
+            } => card_img("6C.svg"),
+            Card {
+                rank: Rank::Five,
+                suit: Suit::Clubs,
+            } => card_img("5C.svg"),
+            Card {
+                rank: Rank::Four,
+                suit: Suit::Clubs,
+            } => card_img("4C.svg"),
+            Card {
+                rank: Rank::Three,
+                suit: Suit::Clubs,
+            } => card_img("3C.svg"),
+            Card {
+                rank: Rank::Two,
+                suit: Suit::Clubs,
+            } => card_img("2C.svg"),
+            Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamonds,
+            } => card_img("AD.svg"),
+            Card {
+                rank: Rank::King,
+                suit: Suit::Diamonds,
+            } => card_img("KD.svg"),
+            Card {
+                rank: Rank::Queen,
+                suit: Suit::Diamonds,
+            } => card_img("QD.svg"),
+            Card {
+                rank: Rank::Jack,
+                suit: Suit::Diamonds,
+            } => card_img("JD.svg"),
+            Card {
+                rank: Rank::Ten,
+                suit: Suit::Diamonds,
+            } => card_img("TD.svg"),
+            Card {
+                rank: Rank::Nine,
+                suit: Suit::Diamonds,
+            } => card_img("9D.svg"),
+            Card {
+                rank: Rank::Eight,
+                suit: Suit::Diamonds,
+            } => card_img("8D.svg"),
+            Card {
+                rank: Rank::Seven,
+                suit: Suit::Diamonds,
+            } => card_img("7D.svg"),
+            Card {
+                rank: Rank::Six,
+                suit: Suit::Diamonds,
+            } => card_img("6D.svg"),
+            Card {
+                rank: Rank::Five,
+                suit: Suit::Diamonds,
+            } => card_img("5D.svg"),
+            Card {
+                rank: Rank::Four,
+                suit: Suit::Diamonds,
+            } => card_img("4D.svg"),
+            Card {
+                rank: Rank::Three,
+                suit: Suit::Diamonds,
+            } => card_img("3D.svg"),
+            Card {
+                rank: Rank::Two,
+                suit: Suit::Diamonds,
+            } => card_img("2D.svg"),
             _ => panic!("card image missing"),
         }
     }
@@ -180,7 +367,7 @@ pub fn view_hand<'a>() -> Column<'a, StepMessage> {
             suit: Suit::Spades,
         },
         Card {
-            rank: Rank::Jack,
+            rank: Rank::King,
             suit: Suit::Spades,
         },
         Card {
@@ -188,7 +375,7 @@ pub fn view_hand<'a>() -> Column<'a, StepMessage> {
             suit: Suit::Spades,
         },
         Card {
-            rank: Rank::King,
+            rank: Rank::Jack,
             suit: Suit::Spades,
         },
         Card {
