@@ -29,6 +29,8 @@ impl Sandbox for Gui {
             next_button: button::State::new(),
             debug: false,
             config_data: config::get(),
+            // The main game struct can't really be at the top-level here, because
+            // Only the server should be able to create the game struct and write to it.
             game_state: game::Game::new(),
         }
     }
