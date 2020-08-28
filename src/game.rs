@@ -361,7 +361,6 @@ pub fn start(new_game: &mut Game) {
 
 // TODO: Checkboxes for each card needed here
 pub fn view_hand<'a>(player_hand: &[Card; 5]) -> Column<'a, StepMessage> {
-
     let container = gui::Step::container("Game Start").push(Text::new("(Test) Game Start"));
 
     // Create row of cards.
