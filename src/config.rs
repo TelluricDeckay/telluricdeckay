@@ -52,11 +52,27 @@ pub fn get() -> Data {
     for i in &config_vec {
         match i.option.as_ref() {
             "PlayerNick" => config_data.player_nick = i.value.primary.clone(),
-            "Server.port" => config_data.server_port = i.value.primary.parse().expect("Invalid port number"),
+            "Server.port" => {
+                config_data.server_port = i.value.primary.parse().expect("Invalid port number")
+            }
             "testing.interactive" => testing_interactive = true,
-            "max.players" => config_data.max_players = i.value.primary.parse().expect("Invalid max players specified"),
-            "max.bet" => config_data.max_bet = i.value.primary.parse().expect("Invalid max bet specified"),
-            "max.raises" => config_data.max_raises = i.value.primary.parse().expect("Invalid max raises specified"),
+            "max.players" => {
+                config_data.max_players = i
+                    .value
+                    .primary
+                    .parse()
+                    .expect("Invalid max players specified")
+            }
+            "max.bet" => {
+                config_data.max_bet = i.value.primary.parse().expect("Invalid max bet specified")
+            }
+            "max.raises" => {
+                config_data.max_raises = i
+                    .value
+                    .primary
+                    .parse()
+                    .expect("Invalid max raises specified")
+            }
 
             // Needs conversion from str to i32
             // "Server.port" => config_data.server_port = i.value.primary.clone(),
