@@ -1,4 +1,3 @@
-use crate::gui::{self, StepMessage};
 use crate::player::{self, Player};
 use iced::{Checkbox, Column, Length, Row, Svg, Text};
 use ionic_deckhandler::{Card, Deck, Rank, Suit};
@@ -360,17 +359,17 @@ pub fn start(new_game: &mut Game) {
 )); */
 
 // TODO: Checkboxes for each card needed here
-pub fn view_hand<'a>(player_hand: &[Card; 5]) -> Column<'a, StepMessage> {
-    let container = gui::Step::container("Game Start").push(Text::new("(Test) Game Start"));
+// pub fn view_hand<'a>(player_hand: &[Card; 5]) -> Column<'a, StepMessage> {
+//     let container = gui::Step::container("Game Start").push(Text::new("(Test) Game Start"));
 
-    // Create row of cards.
-    container.push(
-        player_hand
-            .get_hand_imgs()
-            .into_iter()
-            .fold(Row::new(), |acc, img| acc.push(img)),
-    )
-}
+//     // Create row of cards.
+//     container.push(
+//         player_hand
+//             .get_hand_imgs()
+//             .into_iter()
+//             .fold(Row::new(), |acc, img| acc.push(img)),
+//     )
+// }
 
 #[derive(Debug)]
 pub enum CardDealing {
