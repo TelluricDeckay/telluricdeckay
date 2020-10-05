@@ -1,12 +1,16 @@
 mod config;
 mod game;
 mod player;
-use iced::Sandbox;
+use iced::{window::Settings, Sandbox};
 use std::io;
 mod gui;
 
 fn main() -> Result<(), io::Error> {
-    gui::Gui::run(iced::Settings::default());
-
+    let mut settings = iced::Settings::default();
+    settings.window = Settings {
+        size: (640, 480),
+        ..Settings::default()
+    };
+    gui::Gui::run(settings);
     Ok(())
 }
