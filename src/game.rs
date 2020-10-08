@@ -9,8 +9,8 @@ fn card_img(card_name: &str) -> Svg {
         env!("CARGO_MANIFEST_DIR"),
         card_name
     ))
-    .width(Length::Units(100))
-    .height(Length::Units(100))
+    .width(Length::Units(50))
+    .height(Length::Units(50))
 }
 
 trait CardToImg {
@@ -233,7 +233,7 @@ impl CardToImg for Card {
     }
 }
 
-trait HandToImgs {
+pub trait HandToImgs {
     fn get_hand_imgs(&self) -> Vec<Svg>;
 }
 
