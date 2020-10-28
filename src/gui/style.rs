@@ -29,6 +29,7 @@ impl container::StyleSheet for ContainerStyle {
         container::Style {
             background: Some(Color::from_rgb8(0x3A, 0x38, 0x5B).into()),
             text_color: Color::from_rgb8(0xA8, 0xA3, 0x6B).into(),
+            border_color: Color::from_rgb8(0xA8, 0xA3, 0x6B).into(),
             ..container::Style::default()
         }
     }
