@@ -30,18 +30,20 @@ impl<'a> Page {
         "TelluricDeckay".to_owned()
     }
 
-    fn container(title: &str) -> Column<'a, Message> {
-        Column::new().spacing(20).push(
-            Text::new(title)
-                .size(50)
-                .width(Length::Fill)
-                .horizontal_alignment(HorizontalAlignment::Center),
-        )
-        .align_items(Align::Center)
+    fn container(title: &str, title_sz: u16) -> Column<'a, Message> {
+        Column::new()
+            .spacing(20)
+            .push(
+                Text::new(title)
+                    .size(title_sz)
+                    // .width(Length::Fill)
+                    .horizontal_alignment(HorizontalAlignment::Center),
+            )
+            .align_items(Align::Center)
     }
 
     fn menu(button_state: &'a mut button::State) -> Column<'a, Message> {
-        Self::container("Welcome to TelluricDeckay!")
+        Self::container("Welcome to TelluricDeckay!", 50)
             .push(
                 Text::new("A Poker Game")
                     .width(Length::Fill)
@@ -58,7 +60,7 @@ impl<'a> Page {
     }
 
     fn setup(five_player_state: &'a mut button::State, seven_player_state: &'a mut button::State) -> Column<'a, Message> {
-        Self::container("Game Setup")
+        Self::container("Game Setup", 30)
         .push(
             Button::new(
                 five_player_state,
@@ -78,10 +80,20 @@ impl<'a> Page {
     }
 
     fn game(game: &Game) -> Column<'a, Message> {
-        Self::container("Table")
+        Column::new()
+        .push(
+        Row::new()
+        .spacing(200)
+        .push(
+        Self::container("Table", 30)
         .push({
-            let mut player_row = Row::new().spacing(2);
-            for p in game.players.iter() {
+            let mut col = Column::new().spacing(100);
+            let mut player_row = Row::new().spacing(5);
+            for (i, p) in game.players.iter().enumerate() {
+                if i % 2 == 0 && i != 0 {
+                    col = col.push(player_row);
+                    player_row = Row::new().spacing(10);
+                }
                 player_row = player_row.push({
                     let mut card_row = Row::new();
                     for c_img in p.hand.get_hand_imgs().iter() {
@@ -90,19 +102,25 @@ impl<'a> Page {
                     card_row
                 })
             }
-            player_row
+            col
         })
         .push({
             Row::new()
+                .spacing(50)
                 .push({
+                    let hand = Self::container("Your hand", 20);
                     let mut card_row = Row::new();
-                    for c_img in game.players[0].hand.get_hand_imgs().iter() {
-                        card_row = card_row.push(c_img.clone());
+                    for c_img in game.players[0].hand.get_hand_imgs().into_iter() {
+                        card_row = card_row.push(c_img);
                     }
-                    card_row
+                    hand.push(card_row)
                 })
-                .push(Self::container("Options"))
-        })
+                .push(Self::container("Options", 20)
+                .push(Text::new("<none>"))
+                )
+        }))
+        .push(Self::container("State", 20)
+        .push(Text::new(&game.status))))
     }
 
     fn view(&mut self, game: &Game) -> Element<Message> {
