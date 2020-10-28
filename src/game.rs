@@ -250,6 +250,7 @@ pub struct Game {
     pub pot: i32,
     pub deck: Vec<Card>,
     pub round: BettingRound,
+    pub status: String,
 }
 
 impl Game {
@@ -260,6 +261,7 @@ impl Game {
             pot: 0,
             deck: Card::get_deck(),
             round: BettingRound::new(),
+            status: String::new(),
         }
     }
 }
@@ -330,14 +332,14 @@ pub fn start(new_game: &mut Game) {
     // TODO: Don't show the hands for players that folded
 
     // Showdown
-    println!("Total in pot = ${}", new_game.pot);
+    new_game.status.push_str(&format!("\nTotal in pot = ${}", new_game.pot));
     for pl in new_game.players.iter_mut() {
-        println!(
-            "Player {} got a {} and has {} chips remaining",
+        new_game.status.push_str(&format!(
+            "\nPlayer {} got a {} and has {} chips remaining",
             pl.name,
             telluric_handeval::poker::evaluate(&mut pl.hand).0.name(),
             pl.chips
-        );
+        ));
     }
     println!();
 }
@@ -400,7 +402,7 @@ pub fn ante(new_game: &mut Game) {
     for pl in new_game.players.iter_mut() {
         pl.chips -= 1;
         new_game.pot += 1;
-        println!("{} adds 1 for the ante", pl.name);
+        new_game.status.push_str(&format!("\n{} adds 1 for the ante", pl.name));
     }
 }
 
@@ -452,7 +454,7 @@ pub fn round(new_game: &mut Game) {
                                 &mut new_game.round.initial_bet_plus_raises,
                                 &mut new_game.pot,
                             );
-                            println!("{} opens with {}", pl.name, input_open);
+                            new_game.status.push_str(&format!("\n{} opens with {}", pl.name, input_open));
                             new_game.round.initial_bet_plus_raises = input_open;
                         }
                         player::Action::Fold => {
