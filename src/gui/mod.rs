@@ -15,7 +15,7 @@ use style::{ ButtonStyle, ContainerStyle };
 enum Page {
     Menu { start_button: button::State },
     Setup { five_player: button::State, seven_player: button::State },
-    Game,
+    Game { bet: button::State, call: button::State, fold: button::State},
     Finish,
 }
 
@@ -79,7 +79,7 @@ impl<'a> Page {
         )
     }
 
-    fn game(game: &Game) -> Column<'a, Message> {
+    fn game(game: &Game, bet_btn_state: &'a mut button::State, call_btn_state: &'a mut button::State, fold_btn_state: &'a mut button::State) -> Column<'a, Message> {
         Column::new()
         .push(
         Row::new()
@@ -116,9 +116,27 @@ impl<'a> Page {
                     hand.push(card_row)
                 })
                 .push(Self::container("Options", 20)
-                .push(Text::new("<none>"))
+                    .push(Button::new(
+                        bet_btn_state,
+                        Text::new("Bet").horizontal_alignment(HorizontalAlignment::Center),
+                        )
+                        .on_press(Message::BetPressed)
+                        .style(ButtonStyle))
+                    .push(Button::new(
+                        call_btn_state,
+                        Text::new("Call").horizontal_alignment(HorizontalAlignment::Center),
+                        )
+                        .on_press(Message::CallPressed)
+                        .style(ButtonStyle))
+                    .push(Button::new(
+                        fold_btn_state,
+                        Text::new("Fold").horizontal_alignment(HorizontalAlignment::Center),
+                        )
+                        .on_press(Message::FoldPressed)
+                        .style(ButtonStyle))
                 )
-        }))
+            })
+        )
         .push(Self::container("State", 20)
         .push(Text::new(&game.status))))
     }
@@ -129,7 +147,7 @@ impl<'a> Page {
                 ref mut start_button,
             } => Self::menu(start_button),
             Page::Setup { ref mut five_player, ref mut seven_player } => Self::setup(five_player, seven_player),
-            Page::Game => Self::game(game),
+            Page::Game { ref mut bet, ref mut call, ref mut fold }=> Self::game(game, bet, call, fold),
             _ => panic!("state not supported"),
         }
         .into()
@@ -146,6 +164,9 @@ pub enum Message {
     NewGamePressed,
     FivePlayerGamePressed,
     SevenPlayerGamePressed,
+    BetPressed,
+    CallPressed,
+    FoldPressed,
 }
 
 impl Pages {
@@ -159,7 +180,11 @@ impl Pages {
                     five_player: button::State::new(),
                     seven_player: button::State::new(),
                 },
-                Page::Game,
+                Page::Game {
+                    bet: button::State::new(),
+                    call: button::State::new(),
+                    fold: button::State:: new(),
+                },
                 Page::Finish,
             ],
             current: 0,
@@ -178,6 +203,9 @@ impl Pages {
         match event {
             Message::NewGamePressed => self.current = 1,
             Message::FivePlayerGamePressed => self.current = 2,
+            Message::BetPressed => (),
+            Message::CallPressed => (),
+            Message::FoldPressed => (),
             _ => panic!("not implemented this message yet."),
         }
     }
