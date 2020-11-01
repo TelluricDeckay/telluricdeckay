@@ -27,10 +27,18 @@ build:
 install: build
 	install -D -s -m 0755 ./target/release/telluricdeckay -t $(BIN_DEST)
 	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)/@datadir@/telluricdeckay/assets/cards
+	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)/@datadir@/appdata
+	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)/@datadir@/applications
 
 uninstall:
 	if test -f $(BIN_DEST)/telluricdeckay; then	\
 		$(RM) $(BIN_DEST)/telluricdeckay;	\
+	fi;	\
+	if test -f $(DESTDIR)/@datadir@/appdata/telluricdeckay.appdata.xml; then	\
+		$(RM) $(DESTDIR)/@datadir@/appdata/telluricdeckay.appdata.xml;	\
+	fi;	\
+	if test -f $(DESTDIR)/@datadir@/applications/telluricdeckay.desktop; then	\
+		$(RM) $(DESTDIR)/@datadir@/applications/telluricdeckay.desktop;	\
 	fi;	\
 	for card in $(CARD_FILES); do	\
 		file="$(DESTDIR)@datadir@/telluricdeckay/assets/cards/"$$card;	\
