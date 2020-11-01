@@ -1,3 +1,5 @@
+pub mod config_h;
+
 pub mod cli_options {
     //    use std::path::PathBuf;
     use structopt::StructOpt;
