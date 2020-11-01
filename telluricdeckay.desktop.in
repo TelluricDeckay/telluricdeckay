@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=@PACKAGE_NAME@
+GenericName=Network Multi-player Poker Game
+Exec=@PACKAGE_TARNAME@
+Icon=
+Terminal=false
+Type=Application
+MimeType=application/octet-stream
+StartupNotify=true
+Categories=Games;
+Keywords=games;network;

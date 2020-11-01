@@ -1,5 +1,6 @@
 use structopt::StructOpt;
 use telluricdeckay::cli_options;
+use telluricdeckay::config_h;
 
 pub fn get_filename(opt_cfg: Option<String>) -> String {
     if opt_cfg.is_none() {

@@ -6,7 +6,7 @@ use ionic_deckhandler::{Card, Deck, Rank, Suit};
 fn card_img(card_name: &str) -> Svg {
     Svg::from_path(format!(
         "{}/assets/cards/{}",
-        env!("CARGO_MANIFEST_DIR"),
+        telluricdeckay::config_h::get_datadir(),
         card_name
     ))
     .width(Length::Units(50))

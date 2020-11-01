@@ -1,0 +1,57 @@
+datarootdir = @datarootdir@
+
+DESTDIR=@prefix@
+BIN_DEST=$(DESTDIR)/games
+
+CARD_FILES =	\
+	AC.svg	\
+	2C.svg	\
+	3C.svg
+
+CLEAN_FILES =	\
+	telluricdeckay.desktop	\
+	telluricdeckay.appdata.xml	\
+	config_h.rs
+
+DISTCLEAN_FILES =	\
+	Makefile	\
+	config.status	\
+	config.log
+
+devbuild:
+	cargo build
+
+build:
+	cargo build --release
+
+install: build
+	install -D -s -m 0755 ./target/release/telluricdeckay -t $(BIN_DEST)
+	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)/@datadir@/telluricdeckay/assets/cards
+
+uninstall:
+	if test -f $(BIN_DEST)/telluricdeckay; then	\
+		$(RM) $(BIN_DEST)/telluricdeckay;	\
+	fi;	\
+	for card in $(CARD_FILES); do	\
+		file="$(DESTDIR)@datadir@/telluricdeckay/assets/cards/"$$card;	\
+		if test -f $$file; then	\
+			$(RM) $$file;	\
+		fi;	\
+	done
+
+clean:
+	for file in $(CLEAN_FILES); do	\
+		if test -f $$file; then	\
+			$(RM) $$file;	\
+		fi;	\
+	done
+
+distclean: clean
+	for file in $(DISTCLEAN_FILES); do	\
+		if test -f $$file; then	\
+			$(RM) $$file;	\
+		fi;	\
+	done
+
+
+

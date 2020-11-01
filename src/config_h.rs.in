@@ -1,0 +1,8 @@
+use std::path::Path;
+
+pub fn get_datadir() -> &'static str {
+  if Path::new("./assets/cards").exists() {
+    return ".";
+  }
+  "@prefix@"
+}
