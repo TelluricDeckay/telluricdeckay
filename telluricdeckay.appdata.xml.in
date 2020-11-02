@@ -16,7 +16,7 @@
     <keyword>network</keyword>
     <keyword>multiplayer</keyword>
   </keywords>
-  <url type="homepage">https://github.com/TelluricDeckay/telluricdeckay</url>
+  <url type="homepage">@PACKAGE_URL@</url>
   <url type="bugtracker">@PACKAGE_BUGREPORT@</url>
   <screenshots/>
 </application>
