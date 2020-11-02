@@ -2,11 +2,11 @@
 Version=1.0
 Name=@PACKAGE_NAME@
 GenericName=Network Multi-player Poker Game
-Exec=@PACKAGE_TARNAME@
-Icon=
+Exec=@prefix@/games/@PACKAGE_TARNAME@
+Icon=@prefix@/share/pixmaps/52-Tellurium-Tile
 Terminal=false
 Type=Application
 MimeType=application/octet-stream
 StartupNotify=true
-Categories=Games;
+Categories=Game;
 Keywords=games;network;
