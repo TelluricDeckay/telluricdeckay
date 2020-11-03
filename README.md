@@ -10,6 +10,8 @@ In early development, not ready for use yet
 
 ## Build and Run
 
+    autoconf
+    ./configure
     cargo build
     cargo run
 
@@ -22,7 +24,7 @@ No distribution packages are available. To install from source:
     cargo build --release
     make install
 
-If '<dir>' is /usr, the binary will be installed to /usr/games, the data into
+If `<dir>` is /usr, the binary will be installed to /usr/games, the data into
 /usr/share/...
 
 To install without root privileges, try one of these when running
