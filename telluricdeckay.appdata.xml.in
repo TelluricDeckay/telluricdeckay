@@ -8,7 +8,7 @@
   <project_license>MIT OR Apache-2.0</project_license>
   <description/>
   <releases>
-	<release version="@VERSION@" date="@DATE@"/>
+	<release version="@PACKAGE_VERSION@" date="@DATE@"/>
   </releases>
   <keywords>
     <keyword>games</keyword>
