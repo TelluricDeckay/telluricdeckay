@@ -6,7 +6,7 @@ use std::{
 use structopt::StructOpt;
 use telluricdeckay::{cli_options, config_h};
 
-pub fn get_homedir() -> io::Result<String> {
+fn get_homedir() -> io::Result<String> {
     let homedir: String = match dirs::home_dir() {
         Some(homedir) => homedir.to_str().unwrap().into(),
         None => {
@@ -19,14 +19,18 @@ pub fn get_homedir() -> io::Result<String> {
     Ok(homedir)
 }
 
-fn write_config(f: &str) -> std::io::Result<()> {
+// Write all values stored in c_data to a config file. This can be used
+// to create the initial config file, and also, later when the UI supports
+// changing options, the existing config file can be overwritten with new
+// values.
+fn write_config(f: &str, c_data: &Data) -> std::io::Result<()> {
     let mut w = Vec::new();
-    writeln!(&mut w, "PlayerNick = New Player")?;
-    writeln!(&mut w, "Server.true")?;
-    writeln!(&mut w, "Server.port = 61357")?;
-    writeln!(&mut w, "max.players = 5")?;
-    writeln!(&mut w, "max.bet = 50")?;
-    writeln!(&mut w, "max.raises = 3")?;
+    writeln!(&mut w, "PlayerNick = {}", c_data.player_nick)?;
+    writeln!(&mut w, "Server.{}", c_data.is_server)?;
+    writeln!(&mut w, "Server.port = {}", c_data.server_port)?;
+    writeln!(&mut w, "max.players = {}", c_data.max_players)?;
+    writeln!(&mut w, "max.bet = {}", c_data.max_bet)?;
+    writeln!(&mut w, "max.raises = {}", c_data.max_raises)?;
 
     fs::write(&f, &w)
 }
@@ -35,7 +39,7 @@ fn write_config(f: &str) -> std::io::Result<()> {
 // If it wasn't given as a cli argument,
 // first check for its existence in the current directory; if not found there,
 // check to see if $XDG_CONFIG_HOME is set, if not, use homedir.
-pub fn get_filename(opt_cfg: Option<String>) -> String {
+fn get_filename(opt_cfg: Option<String>, c_data: &Data) -> String {
     if opt_cfg.is_none() {
         let basename = "telluricdeckayrc".to_owned();
         let cwd = "./".to_owned();
@@ -54,7 +58,7 @@ pub fn get_filename(opt_cfg: Option<String>) -> String {
 
         let config_file = config_home + "/" + &basename;
         if !std::path::Path::new(&config_file).exists() {
-            write_config(&config_file).expect("Error writing config file");
+            write_config(&config_file, c_data).expect("Error writing config file");
         }
 
         return config_file;
@@ -78,12 +82,15 @@ pub struct Data {
 impl Data {
     pub fn new() -> Self {
         Self {
-            player_nick: String::new(),
+            // Set the default values for writing an initial configuration file.
+            // If a config file already exists, the values in the struct will get
+            // overwritten when the file is read.
+            player_nick: "New Player".to_owned(),
             is_server: false,
-            server_port: 0,
-            max_players: 0,
-            max_bet: 0,
-            max_raises: 0,
+            server_port: 61357,
+            max_players: 5,
+            max_bet: 50,
+            max_raises: 3,
         }
     }
 }
@@ -102,13 +109,14 @@ pub fn get() -> Data {
     }
 
     let mut config_data = Data::new();
-    let config_file = get_filename(opt.custom_config_file);
+    let config_file = get_filename(opt.custom_config_file, &config_data);
     let config_vec = configster::parse_file(&config_file, ',').expect("Error reading config file");
 
     // Example config usage
     for i in &config_vec {
         match i.option.as_ref() {
             "PlayerNick" => config_data.player_nick = i.value.primary.clone(),
+            // TODO: Handle server.true and server.false
             "Server.port" => {
                 config_data.server_port = i.value.primary.parse().expect("Invalid port number")
             }
@@ -130,9 +138,6 @@ pub fn get() -> Data {
                     .parse()
                     .expect("Invalid max raises specified")
             }
-
-            // Needs conversion from str to i32
-            // "Server.port" => config_data.server_port = i.value.primary.clone(),
             _ => (), // Not yet handled.
         }
     }
