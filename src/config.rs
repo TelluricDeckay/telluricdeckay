@@ -66,10 +66,6 @@ fn get_filename(opt_cfg: Option<String>, c_data: &Data) -> String {
     opt_cfg.unwrap()
 }
 
-// I think the comment below is outdated. Is there any good reason that
-// should be changed to an enum? If not, please remove the comment.
-
-// TODO change to enum and add stringification
 pub struct Data {
     pub player_nick: String,
     pub is_server: bool,
