@@ -49,6 +49,7 @@ fn get_filename(opt_cfg: Option<String>, c_data: &Data) -> String {
         }
         let config_home = match env::var("XDG_CONFIG_HOME") {
             Ok(val) => val,
+            // TODO: Handle error checking from get_homedir
             Err(_e) => get_homedir().unwrap() + "/.config",
         };
         if !Path::new(&config_home).exists() {
