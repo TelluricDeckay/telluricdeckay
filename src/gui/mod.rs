@@ -15,7 +15,7 @@ use style::{ ButtonStyle, ContainerStyle };
 enum Page {
     Menu { start_button: button::State },
     Setup { five_player: button::State, seven_player: button::State },
-    Game { bet: button::State, call: button::State, fold: button::State},
+    Game { bet: button::State, bet_amount: slider::State, call: button::State, fold: button::State},
     Finish,
 }
 
@@ -40,6 +40,7 @@ impl<'a> Page {
                     .horizontal_alignment(HorizontalAlignment::Center),
             )
             .align_items(Align::Center)
+            .max_width(500)
     }
 
     fn menu(button_state: &'a mut button::State) -> Column<'a, Message> {
@@ -79,11 +80,11 @@ impl<'a> Page {
         )
     }
 
-    fn game(game: &Game, bet_btn_state: &'a mut button::State, call_btn_state: &'a mut button::State, fold_btn_state: &'a mut button::State) -> Column<'a, Message> {
+    fn game(game: &Game, bet_btn_state: &'a mut button::State, bet_sdr_state: &'a mut slider::State, bet_sdr_val: f32, call_btn_state: &'a mut button::State, fold_btn_state: &'a mut button::State) -> Column<'a, Message> {
         Column::new()
         .push(
         Row::new()
-        .spacing(200)
+        .spacing(100)
         .push(
         Self::container("Table", 30)
         .push({
@@ -116,6 +117,18 @@ impl<'a> Page {
                     hand.push(card_row)
                 })
                 .push(Self::container("Options", 20)
+                    .push(
+                        Text::new(format!("${:.2}",bet_sdr_val))
+                            .size(15)
+                            // .width(Length::Fill)
+                            .horizontal_alignment(HorizontalAlignment::Center),
+                    )
+                    .push(Slider::new(
+                        bet_sdr_state,
+                        1.0..=100.0,
+                        bet_sdr_val,
+                        Message::BetAmountChanged,
+                    ))
                     .push(Button::new(
                         bet_btn_state,
                         Text::new("Bet").horizontal_alignment(HorizontalAlignment::Center),
@@ -138,16 +151,17 @@ impl<'a> Page {
             })
         )
         .push(Self::container("State", 20)
-        .push(Text::new(&game.status))))
+        .push(Text::new(format!("Pot: ${}", game.pot)).size(15))
+        .push(Text::new(&game.status).size(15))))
     }
 
-    fn view(&mut self, game: &Game) -> Element<Message> {
+    fn view(&mut self, game: &Game, bet_sdr_val: f32) -> Element<Message> {
         match *self {
             Page::Menu {
                 ref mut start_button,
             } => Self::menu(start_button),
             Page::Setup { ref mut five_player, ref mut seven_player } => Self::setup(five_player, seven_player),
-            Page::Game { ref mut bet, ref mut call, ref mut fold }=> Self::game(game, bet, call, fold),
+            Page::Game { ref mut bet, ref mut bet_amount, ref mut call, ref mut fold }=> Self::game(game, bet, bet_amount, bet_sdr_val, call, fold),
             _ => panic!("state not supported"),
         }
         .into()
@@ -157,6 +171,7 @@ impl<'a> Page {
 struct Pages {
     pages: [Page; 4],
     current: usize,
+    bet_sdr_val: f32,
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -165,6 +180,7 @@ pub enum Message {
     FivePlayerGamePressed,
     SevenPlayerGamePressed,
     BetPressed,
+    BetAmountChanged(f32),
     CallPressed,
     FoldPressed,
 }
@@ -182,12 +198,14 @@ impl Pages {
                 },
                 Page::Game {
                     bet: button::State::new(),
+                    bet_amount: slider::State::new(),
                     call: button::State::new(),
                     fold: button::State:: new(),
                 },
                 Page::Finish,
             ],
             current: 0,
+            bet_sdr_val: 0.,
         }
     }
 
@@ -196,7 +214,7 @@ impl Pages {
     }
 
     fn view(&mut self, game: &Game) -> Element<Message> {
-        self.pages[self.current].view(game)
+        self.pages[self.current].view(game, self.bet_sdr_val)
     }
 
     fn update(&mut self, event: Message) {
@@ -204,6 +222,7 @@ impl Pages {
             Message::NewGamePressed => self.current = 1,
             Message::FivePlayerGamePressed => self.current = 2,
             Message::BetPressed => (),
+            Message::BetAmountChanged(amount) => self.bet_sdr_val = amount,
             Message::CallPressed => (),
             Message::FoldPressed => (),
             _ => panic!("not implemented this message yet."),
