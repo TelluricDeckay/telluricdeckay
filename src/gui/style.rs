@@ -6,7 +6,7 @@ impl button::StyleSheet for ButtonStyle {
     fn active(&self) -> button::Style {
         button::Style {
             background: Some(Color::from_rgb8(0x4A, 0x1B, 0x46).into()),
-            border_radius: 2,
+            border_radius: 2.0,
             shadow_offset: Vector::new(1.0, 1.0),
             text_color: Color::from_rgb8(0xA8, 0xA3, 0x6B).into(),
             ..button::Style::default()
