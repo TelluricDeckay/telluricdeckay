@@ -10,7 +10,7 @@ license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
-iced = { git = "https://github.com/hecrj/iced", rev = "1af6fb3", features = ["image", "svg"] }
+iced = { version = "0.2.0", features = ["image", "svg"] }
 dirs = "3.0.1"
 structopt = "0.3.15"
 configster = "0.1.1"
