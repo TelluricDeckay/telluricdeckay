@@ -117,6 +117,7 @@ impl<'a> Page {
                     hand.push(card_row)
                 })
                 .push(Self::container("Options", 20)
+                    .push(Text::new(format!("Amount you have left: ${}", game.players[0].chips)).size(15))
                     .push(
                         Text::new(format!("${:.2}",bet_sdr_val))
                             .size(15)
