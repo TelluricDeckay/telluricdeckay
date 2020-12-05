@@ -95,7 +95,7 @@ install: build
 	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@datadir@/telluricdeckay/assets/cards
 	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@datadir@/appdata
 	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@datadir@/applications
-	install -D -m 0644 ./assets/52-Tellurium-Tile.png -t $(DESTDIR)@datadir@/pixmaps
+	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@datadir@/pixmaps
 
 uninstall:
 	if test -f $(BIN_DEST)/telluricdeckay; then	\
@@ -107,8 +107,8 @@ uninstall:
 	if test -f $(DESTDIR)@datadir@/applications/telluricdeckay.desktop; then	\
 		$(RM) $(DESTDIR)@datadir@/applications/telluricdeckay.desktop;	\
 	fi;	\
-	if test -f $(DESTDIR)@datadir@/pixmaps/52-Tellurium-Tile.png; then	\
-		$(RM) $(DESTDIR)@datadir@/pixmaps/52-Tellurium-Tile.png;	\
+	if test -f $(DESTDIR)@datadir@/pixmaps/telluricdeckay.png; then	\
+		$(RM) $(DESTDIR)@datadir@/pixmaps/telluricdeckay.png;	\
 	fi;	\
 	for card in $(CARD_FILES); do	\
 		file="$(DESTDIR)@datadir@/telluricdeckay/assets/cards/"$$card;	\
