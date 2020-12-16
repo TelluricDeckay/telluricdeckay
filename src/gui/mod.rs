@@ -1,21 +1,33 @@
 use crate::config;
-use crate::game::{Game, HandToImgs, start};
+use crate::game::{start, Game, HandToImgs};
 use crate::player;
 use ionic_deckhandler::Card;
 mod style;
+mod scrollables;
 
 use iced::{
-    button, container, scrollable, slider, text_input, Button, Checkbox, Color, Column, Container, pane_grid,
-    Element, HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable, Slider, Space, Text,
-    TextInput, Vector, Align
+    button, container, pane_grid, scrollable, slider, text_input, Align, Button, Checkbox, Color,
+    Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable,
+    Slider, Space, Text, TextInput, Vector,
 };
 
-use style::{ ButtonStyle, ContainerStyle };
+use style::{ButtonStyle, ContainerStyle};
 
 enum Page {
-    Menu { start_button: button::State },
-    Setup { five_player: button::State, seven_player: button::State },
-    Game { bet: button::State, bet_amount: slider::State, call: button::State, fold: button::State},
+    Menu {
+        start_button: button::State,
+    },
+    Setup {
+        five_player: button::State,
+        seven_player: button::State,
+    },
+    Game {
+        bet: button::State,
+        bet_amount: slider::State,
+        call: button::State,
+        fold: button::State,
+        scroll: scrollables::Variant,
+    },
     Finish,
 }
 
@@ -60,101 +72,136 @@ impl<'a> Page {
             )
     }
 
-    fn setup(five_player_state: &'a mut button::State, seven_player_state: &'a mut button::State) -> Column<'a, Message> {
+    fn setup(
+        five_player_state: &'a mut button::State,
+        seven_player_state: &'a mut button::State,
+    ) -> Column<'a, Message> {
         Self::container("Game Setup", 30)
-        .push(
-            Button::new(
-                five_player_state,
-                Text::new("5 Player").horizontal_alignment(HorizontalAlignment::Center),
+            .push(
+                Button::new(
+                    five_player_state,
+                    Text::new("5 Player").horizontal_alignment(HorizontalAlignment::Center),
+                )
+                .on_press(Message::FivePlayerGamePressed)
+                .style(ButtonStyle),
             )
-            .on_press(Message::FivePlayerGamePressed)
-            .style(ButtonStyle)
-        )
-        .push(
-            Button::new(
-                seven_player_state,
-                Text::new("7 Player").horizontal_alignment(HorizontalAlignment::Center),
+            .push(
+                Button::new(
+                    seven_player_state,
+                    Text::new("7 Player").horizontal_alignment(HorizontalAlignment::Center),
+                )
+                .on_press(Message::SevenPlayerGamePressed)
+                .style(ButtonStyle),
             )
-            .on_press(Message::SevenPlayerGamePressed)
-            .style(ButtonStyle)
-        )
     }
 
-    fn game(game: &Game, bet_btn_state: &'a mut button::State, bet_sdr_state: &'a mut slider::State, bet_sdr_val: f32, call_btn_state: &'a mut button::State, fold_btn_state: &'a mut button::State) -> Column<'a, Message> {
-        Column::new()
-        .push(
-        Row::new()
-        .spacing(100)
-        .push(
-        Self::container("Table", 30)
-        .push({
-            let mut col = Column::new().spacing(100);
-            let mut player_row = Row::new().spacing(5);
-            for (i, p) in game.players.iter().enumerate() {
-                if i % 2 == 0 && i != 0 {
-                    col = col.push(player_row);
-                    player_row = Row::new().spacing(10);
-                }
-                player_row = player_row.push({
-                    let mut card_row = Row::new();
-                    card_row = card_row.push(Text::new(p.name));
-                    for c_img in p.hand.get_hand_imgs().iter() {
-                        card_row = card_row.push(c_img.clone());
-                    }
-                    card_row
-                })
-            }
-            col
-        })
-        .push({
+    fn game(
+        game: &Game,
+        bet_btn_state: &'a mut button::State,
+        bet_sdr_state: &'a mut slider::State,
+        bet_sdr_val: f32,
+        call_btn_state: &'a mut button::State,
+        fold_btn_state: &'a mut button::State,
+        scroll: &'a mut scrollables::Variant,
+    ) -> Column<'a, Message> {
+        Column::new().push(
             Row::new()
-                .spacing(50)
-                .push({
-                    let hand = Self::container("Your hand", 20);
-                    let mut card_row = Row::new();
-                    for c_img in game.players[4].hand.get_hand_imgs().into_iter() {
-                        card_row = card_row.push(c_img);
-                    }
-                    hand.push(card_row)
-                })
-                .push(Self::container("Options", 20)
-                    .push(Text::new(format!("Chips left: {}", game.players[4].chips)).size(15))
-                    .push(
-                        Text::new(format!("${:.2}",bet_sdr_val))
-                            .size(15)
-                            // .width(Length::Fill)
-                            .horizontal_alignment(HorizontalAlignment::Center),
-                    )
-                    .push(Slider::new(
-                        bet_sdr_state,
-                        1.0..=100.0,
-                        bet_sdr_val,
-                        Message::BetAmountChanged,
-                    ))
-                    .push(Button::new(
-                        bet_btn_state,
-                        Text::new("Bet").horizontal_alignment(HorizontalAlignment::Center),
-                        )
-                        .on_press(Message::BetPressed)
-                        .style(ButtonStyle))
-                    .push(Button::new(
-                        call_btn_state,
-                        Text::new("Call").horizontal_alignment(HorizontalAlignment::Center),
-                        )
-                        .on_press(Message::CallPressed)
-                        .style(ButtonStyle))
-                    .push(Button::new(
-                        fold_btn_state,
-                        Text::new("Fold").horizontal_alignment(HorizontalAlignment::Center),
-                        )
-                        .on_press(Message::FoldPressed)
-                        .style(ButtonStyle))
+                .spacing(100)
+                .push(
+                    Self::container("Table", 30)
+                        .push({
+                            let mut col = Column::new().spacing(100);
+                            let mut player_row = Row::new().spacing(5);
+                            for (i, p) in game.players.iter().enumerate() {
+                                if i % 2 == 0 && i != 0 {
+                                    col = col.push(player_row);
+                                    player_row = Row::new().spacing(10);
+                                }
+                                player_row = player_row.push({
+                                    let mut card_row = Row::new();
+                                    card_row = card_row.push(Text::new(p.name));
+                                    for c_img in p.hand.get_hand_imgs().iter() {
+                                        card_row = card_row.push(c_img.clone());
+                                    }
+                                    card_row
+                                })
+                            }
+                            col
+                        })
+                        .push({
+                            Row::new()
+                                .spacing(50)
+                                .push({
+                                    let hand = Self::container("Your hand", 20);
+                                    let mut card_row = Row::new();
+                                    for c_img in game.players[4].hand.get_hand_imgs().into_iter() {
+                                        card_row = card_row.push(c_img);
+                                    }
+                                    hand.push(card_row)
+                                })
+                                .push(
+                                    Self::container("Options", 20)
+                                        .push(
+                                            Text::new(format!(
+                                                "Chips left: {}",
+                                                game.players[4].chips
+                                            ))
+                                            .size(15),
+                                        )
+                                        .push(
+                                            Text::new(format!("${:.2}", bet_sdr_val))
+                                                .size(15)
+                                                // .width(Length::Fill)
+                                                .horizontal_alignment(HorizontalAlignment::Center),
+                                        )
+                                        .push(Slider::new(
+                                            bet_sdr_state,
+                                            1.0..=100.0,
+                                            bet_sdr_val,
+                                            Message::BetAmountChanged,
+                                        ))
+                                        .push(
+                                            Button::new(
+                                                bet_btn_state,
+                                                Text::new("Bet").horizontal_alignment(
+                                                    HorizontalAlignment::Center,
+                                                ),
+                                            )
+                                            .on_press(Message::BetPressed)
+                                            .style(ButtonStyle),
+                                        )
+                                        .push(
+                                            Button::new(
+                                                call_btn_state,
+                                                Text::new("Call").horizontal_alignment(
+                                                    HorizontalAlignment::Center,
+                                                ),
+                                            )
+                                            .on_press(Message::CallPressed)
+                                            .style(ButtonStyle),
+                                        )
+                                        .push(
+                                            Button::new(
+                                                fold_btn_state,
+                                                Text::new("Fold").horizontal_alignment(
+                                                    HorizontalAlignment::Center,
+                                                ),
+                                            )
+                                            .on_press(Message::FoldPressed)
+                                            .style(ButtonStyle),
+                                        ),
+                                )
+                        }),
                 )
-            })
+                .push(
+                    Self::container("State", 20)
+                        .push(Text::new(format!("Chips in pot: {}", game.pot)).size(15))
+                        .push(Scrollable::new(&mut scroll.state)
+                                .height(350.into())
+                                .push(Text::new(&game.status).size(15))
+                        ),
+                ),
         )
-        .push(Self::container("State", 20)
-        .push(Text::new(format!("Chips in pot: {}", game.pot)).size(15))
-        .push(Text::new(&game.status).size(15))))
     }
 
     fn view(&mut self, game: &Game, bet_sdr_val: f32) -> Element<Message> {
@@ -162,8 +209,17 @@ impl<'a> Page {
             Page::Menu {
                 ref mut start_button,
             } => Self::menu(start_button),
-            Page::Setup { ref mut five_player, ref mut seven_player } => Self::setup(five_player, seven_player),
-            Page::Game { ref mut bet, ref mut bet_amount, ref mut call, ref mut fold }=> Self::game(game, bet, bet_amount, bet_sdr_val, call, fold),
+            Page::Setup {
+                ref mut five_player,
+                ref mut seven_player,
+            } => Self::setup(five_player, seven_player),
+            Page::Game {
+                ref mut bet,
+                ref mut bet_amount,
+                ref mut call,
+                ref mut fold,
+                ref mut scroll,
+            } => Self::game(game, bet, bet_amount, bet_sdr_val, call, fold, scroll),
             _ => panic!("state not supported"),
         }
         .into()
@@ -202,7 +258,8 @@ impl Pages {
                     bet: button::State::new(),
                     bet_amount: slider::State::new(),
                     call: button::State::new(),
-                    fold: button::State:: new(),
+                    fold: button::State::new(),
+                    scroll: scrollables::Variant::default(),
                 },
                 Page::Finish,
             ],

@@ -1,4 +1,4 @@
-use iced::{ button, container, Color, Vector};
+use iced::{button, container, Color, Vector};
 
 pub struct ButtonStyle;
 

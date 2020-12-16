@@ -267,12 +267,15 @@ impl Game {
 
     pub fn player_bet(&mut self, player_id: usize, bet_amount: i32) {
         if self.players[player_id].chips < bet_amount {
-            self.status.push_str("\n Bet exceeds player's remaining chips!");
-        }
-        else {
+            self.status
+                .push_str("\n Bet exceeds player's remaining chips!");
+        } else {
             self.players[player_id].chips -= bet_amount;
             self.pot += bet_amount;
-            self.status.push_str(&format!("\n{} bets {} chips.", self.players[player_id].name, bet_amount));
+            self.status.push_str(&format!(
+                "\n{} bets {} chips.",
+                self.players[player_id].name, bet_amount
+            ));
         }
     }
 }
@@ -343,7 +346,9 @@ pub fn start(new_game: &mut Game) {
     // TODO: Don't show the hands for players that folded
 
     // Showdown
-    new_game.status.push_str(&format!("\nTotal in pot = ${}", new_game.pot));
+    new_game
+        .status
+        .push_str(&format!("\nTotal in pot = ${}", new_game.pot));
     for pl in new_game.players.iter_mut() {
         new_game.status.push_str(&format!(
             "\nPlayer {} got a {} and has {} chips remaining",
@@ -413,7 +418,9 @@ pub fn ante(new_game: &mut Game) {
     for pl in new_game.players.iter_mut() {
         pl.chips -= 1;
         new_game.pot += 1;
-        new_game.status.push_str(&format!("\n{} adds 1 for the ante", pl.name));
+        new_game
+            .status
+            .push_str(&format!("\n{} adds 1 for the ante", pl.name));
     }
 }
 
@@ -465,7 +472,9 @@ pub fn round(new_game: &mut Game) {
                                 &mut new_game.round.initial_bet_plus_raises,
                                 &mut new_game.pot,
                             );
-                            new_game.status.push_str(&format!("\n{} opens with {}", pl.name, input_open));
+                            new_game
+                                .status
+                                .push_str(&format!("\n{} opens with {}", pl.name, input_open));
                             new_game.round.initial_bet_plus_raises = input_open;
                         }
                         player::Action::Fold => {

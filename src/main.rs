@@ -1,7 +1,7 @@
 mod config;
 mod game;
-mod player;
 mod gui;
+mod player;
 use iced::{window::Settings, Sandbox};
 use std::io;
 
