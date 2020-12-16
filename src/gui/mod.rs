@@ -97,6 +97,7 @@ impl<'a> Page {
                 }
                 player_row = player_row.push({
                     let mut card_row = Row::new();
+                    card_row = card_row.push(Text::new(p.name));
                     for c_img in p.hand.get_hand_imgs().iter() {
                         card_row = card_row.push(c_img.clone());
                     }
@@ -111,13 +112,13 @@ impl<'a> Page {
                 .push({
                     let hand = Self::container("Your hand", 20);
                     let mut card_row = Row::new();
-                    for c_img in game.players[0].hand.get_hand_imgs().into_iter() {
+                    for c_img in game.players[4].hand.get_hand_imgs().into_iter() {
                         card_row = card_row.push(c_img);
                     }
                     hand.push(card_row)
                 })
                 .push(Self::container("Options", 20)
-                    .push(Text::new(format!("Amount you have left: ${}", game.players[0].chips)).size(15))
+                    .push(Text::new(format!("Chips left: {}", game.players[4].chips)).size(15))
                     .push(
                         Text::new(format!("${:.2}",bet_sdr_val))
                             .size(15)
@@ -152,7 +153,7 @@ impl<'a> Page {
             })
         )
         .push(Self::container("State", 20)
-        .push(Text::new(format!("Pot: ${}", game.pot)).size(15))
+        .push(Text::new(format!("Chips in pot: {}", game.pot)).size(15))
         .push(Text::new(&game.status).size(15))))
     }
 
@@ -218,11 +219,11 @@ impl Pages {
         self.pages[self.current].view(game, self.bet_sdr_val)
     }
 
-    fn update(&mut self, event: Message) {
+    fn update(&mut self, event: Message, game: &mut Game) {
         match event {
             Message::NewGamePressed => self.current = 1,
             Message::FivePlayerGamePressed => self.current = 2,
-            Message::BetPressed => (),
+            Message::BetPressed => game.player_bet(4, self.bet_sdr_val as i32),
             Message::BetAmountChanged(amount) => self.bet_sdr_val = amount,
             Message::CallPressed => (),
             Message::FoldPressed => (),
@@ -253,7 +254,7 @@ impl Sandbox for Gui {
     }
 
     fn update(&mut self, event: Self::Message) {
-        self.pages.update(event)
+        self.pages.update(event, &mut self.game)
     }
 
     fn view(&mut self) -> Element<Self::Message> {

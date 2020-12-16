@@ -264,6 +264,17 @@ impl Game {
             status: String::new(),
         }
     }
+
+    pub fn player_bet(&mut self, player_id: usize, bet_amount: i32) {
+        if self.players[player_id].chips < bet_amount {
+            self.status.push_str("\n Bet exceeds player's remaining chips!");
+        }
+        else {
+            self.players[player_id].chips -= bet_amount;
+            self.pot += bet_amount;
+            self.status.push_str(&format!("\n{} bets {} chips.", self.players[player_id].name, bet_amount));
+        }
+    }
 }
 
 pub fn start(new_game: &mut Game) {
