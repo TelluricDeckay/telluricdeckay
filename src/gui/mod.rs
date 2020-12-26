@@ -156,7 +156,7 @@ impl<'a> Page {
                                         )
                                         .push(Slider::new(
                                             bet_sdr_state,
-                                            1.0..=100.0,
+                                            0.0..=100.0,
                                             bet_sdr_val,
                                             Message::BetAmountChanged,
                                         ))

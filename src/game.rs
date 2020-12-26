@@ -266,12 +266,26 @@ impl Game {
     }
 
     pub fn player_bet(&mut self, player_id: usize, bet_amount: i32) {
+        if bet_amount < self.round.initial_bet_plus_raises {
+            if self.round.initial_bet_plus_raises < self.players[player_id].chips {
+                self.status
+                    .push_str("\nBet is less than initial plus raises.");
+                return;
+            }
+            else if bet_amount < self.players[player_id].chips {
+                self.status
+                    .push_str("\nYou must bet all your chips.");
+                return;
+            }
+        }
         if self.players[player_id].chips < bet_amount {
             self.status
-                .push_str("\n Bet exceeds player's remaining chips!");
-        } else {
+                .push_str("\nBet exceeds player's remaining chips!");
+        }
+        else {
             self.players[player_id].chips -= bet_amount;
             self.pot += bet_amount;
+            self.round.initial_bet_plus_raises = bet_amount;
             self.status.push_str(&format!(
                 "\n{} bets {} chips.",
                 self.players[player_id].name, bet_amount
