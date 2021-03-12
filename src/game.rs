@@ -492,11 +492,11 @@ pub fn round(new_game: &mut Game) {
                             new_game.round.initial_bet_plus_raises = input_open;
                         }
                         player::Action::Fold => {
-                            pl.has_folded = player::fold(&pl.name);
+                            new_game.status.push(player::fold(&pl.name, &mut pl.has_folded));
                         }
-                        player::Action::Check => player::check(&pl.name),
-
-                        _ => println!("!Condition mismatch 1"), // The UI should only allow the options above
+                        player::Action::Check => new_game.status.push(player::check(&pl.name)),
+                        _ => println!("!Condition mismatch 1"),
+                         // The UI should only allow the options above
                     }
                 }
 
@@ -513,26 +513,26 @@ pub fn round(new_game: &mut Game) {
                     }
                     match input {
                         player::Action::Call => {
-                            player::call(
+                            new_game.status.push(player::call(
                                 &pl.name,
                                 &mut pl.chips,
                                 &mut pl.total_amount_added_this_round,
                                 &new_game.round.initial_bet_plus_raises,
                                 &mut new_game.pot,
-                            );
+                            ));
                         }
                         player::Action::Raise => {
                             let input_raise = 8;
-                            player::raise(
+                            new_game.status.push(player::raise(
                                 &pl.name,
                                 &input_raise,
                                 &mut pl.chips,
                                 &mut pl.total_amount_added_this_round,
                                 &mut new_game.round.initial_bet_plus_raises,
                                 &mut new_game.pot,
-                            );
+                            ));
                         }
-                        player::Action::Fold => pl.has_folded = player::fold(&pl.name),
+                        player::Action::Fold => new_game.status.push(player::fold(&pl.name, &mut pl.has_folded)),
                         _ => println!("!Condition mismatch 2"),
                     }
                 }

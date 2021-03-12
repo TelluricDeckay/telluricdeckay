@@ -43,12 +43,14 @@ pub fn call(
     pl_total_amount_added_this_round: &mut i32,
     initial_bet_plus_raises: &i32,
     pot: &mut i32,
-) {
+)-> String  {
     let t = initial_bet_plus_raises - *pl_total_amount_added_this_round;
     *chips -= t;
     *pl_total_amount_added_this_round += t;
     *pot += t;
-    println!("{} calls bet of ${}", name, t);
+
+    format!("{} calls bet of ${}", name, t)
+
 }
 
 pub fn raise(
@@ -58,8 +60,8 @@ pub fn raise(
     pl_total_amount_added_this_round: &mut i32,
     initial_bet_plus_raises: &mut i32,
     pot: &mut i32,
-) {
-    call(
+) -> String {
+   let call_message = call(
         name,
         chips,
         pl_total_amount_added_this_round,
@@ -71,20 +73,20 @@ pub fn raise(
     *chips -= t;
     *pl_total_amount_added_this_round += t;
     *pot += t;
-    println!("and raises ${}", input_raise);
     *initial_bet_plus_raises += input_raise;
+    format!("{} and raises ${}",call_message, input_raise)
 }
 
-pub fn check(name: &str) {
-    println!("{} checks.", name);
+pub fn check(name: &str) -> String {
+    format!("{} checks.", name)
 }
 
 // Players that fold shouldn't be popped from the 'players' vector;
 // the server and client needs to know about them throughout the
 // game, and at the end, still display that they folded.
-pub fn fold(name: &str) -> bool {
-    println!("{} folds.", name);
-    true
+pub fn fold(name: &str, has_folded: &mut bool) -> String {
+    *has_folded = true;
+    format!("{} folds.", name)
 }
 
 #[derive(Debug, Copy, Clone)]
