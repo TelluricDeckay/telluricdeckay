@@ -196,11 +196,13 @@ impl<'a> Page {
                 .push(
                     Self::container("State", 20)
                         .push(Text::new(format!("Chips in pot: {}", game.pot)).size(15))
-                        .push(Scrollable::new(&mut scroll.state)
-                                .height(350.into())
-                                .push(Text::new(&game.status).size(15))
+                        .push(
+                            game.status.iter()
+                                .fold(Scrollable::new(&mut scroll.state).height(350.into()),
+                                    |s, msg| s.push(Text::new(msg).size(15))
+                                ),
                         ),
-                ),
+                )
         )
     }
 

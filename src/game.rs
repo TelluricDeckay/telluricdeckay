@@ -250,7 +250,7 @@ pub struct Game {
     pub pot: i32,
     pub deck: Vec<Card>,
     pub round: BettingRound,
-    pub status: String,
+    pub status: Vec<String>,
 }
 
 impl Game {
@@ -261,7 +261,7 @@ impl Game {
             pot: 0,
             deck: Card::get_deck(),
             round: BettingRound::new(),
-            status: String::new(),
+            status: Vec::new(),
         }
     }
 
@@ -269,25 +269,25 @@ impl Game {
         if bet_amount < self.round.initial_bet_plus_raises {
             if self.round.initial_bet_plus_raises < self.players[player_id].chips {
                 self.status
-                    .push_str("\nBet is less than initial plus raises.");
+                    .push("Bet is less than initial plus raises.".to_string());
                 return;
             }
             else if bet_amount < self.players[player_id].chips {
                 self.status
-                    .push_str("\nYou must bet all your chips.");
+                    .push("You must bet all your chips.".to_string());
                 return;
             }
         }
         if self.players[player_id].chips < bet_amount {
             self.status
-                .push_str("\nBet exceeds player's remaining chips!");
+                .push("Bet exceeds player's remaining chips!".to_string());
         }
         else {
             self.players[player_id].chips -= bet_amount;
             self.pot += bet_amount;
             self.round.initial_bet_plus_raises = bet_amount;
-            self.status.push_str(&format!(
-                "\n{} bets {} chips.",
+            self.status.push(format!(
+                "{} bets {} chips.",
                 self.players[player_id].name, bet_amount
             ));
         }
@@ -362,10 +362,10 @@ pub fn start(new_game: &mut Game) {
     // Showdown
     new_game
         .status
-        .push_str(&format!("\nTotal in pot = ${}", new_game.pot));
+        .push(format!("Total in pot = ${}", new_game.pot));
     for pl in new_game.players.iter_mut() {
-        new_game.status.push_str(&format!(
-            "\nPlayer {} got a {} and has {} chips remaining",
+        new_game.status.push(format!(
+            "Player {} got a {} and has {} chips remaining",
             pl.name,
             telluric_handeval::poker::evaluate(&mut pl.hand).0.name(),
             pl.chips
@@ -434,7 +434,7 @@ pub fn ante(new_game: &mut Game) {
         new_game.pot += 1;
         new_game
             .status
-            .push_str(&format!("\n{} adds 1 for the ante", pl.name));
+            .push(format!("{} adds 1 for the ante", pl.name));
     }
 }
 
@@ -488,7 +488,7 @@ pub fn round(new_game: &mut Game) {
                             );
                             new_game
                                 .status
-                                .push_str(&format!("\n{} opens with {}", pl.name, input_open));
+                                .push(format!("{} opens with {}", pl.name, input_open));
                             new_game.round.initial_bet_plus_raises = input_open;
                         }
                         player::Action::Fold => {
