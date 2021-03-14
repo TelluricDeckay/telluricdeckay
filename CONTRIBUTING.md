@@ -30,12 +30,12 @@ your patch may get rejected.
 you're unable to work on it, or if you changed your mind, please post
 again on the ticket to let everyone know it's up for grabs.
 
-You can use [The GitHub
-flow](https://guides.github.com/introduction/flow/), which mostly just
-involves creating a separate branch for each patch you're working on.
-Using that method helps prevent merge conflicts later. *Note* that you
-should never need to work on the trunk (main) branch or merge your patches
-into the trunk branch (See "syncing" below).
+Use [The GitHub flow](https://guides.github.com/introduction/flow/),
+which mostly just involves creating a separate branch for each patch
+you're working on. Using that method helps prevent merge conflicts
+later. *Note* that you should never need to work on the trunk (main)
+branch or merge your patches into the trunk branch (See "syncing"
+below).
 
 Source code patches should only contain changes related to a single
 issue. This helps speed up the review and discussion process. However,
