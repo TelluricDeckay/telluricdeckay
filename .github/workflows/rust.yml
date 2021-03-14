@@ -4,10 +4,10 @@ name: Rust
 on:
   push:
     paths-ignore:
-    - '*.md'
+    - '**.md'
   pull_request:
     paths-ignore:
-    - '*.md'
+    - '**.md'
 
 env:
   CARGO_TERM_COLOR: always
