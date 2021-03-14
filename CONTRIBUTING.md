@@ -8,11 +8,11 @@ To view open issues on all projects in the TD organization, you can use
 link](https://github.com/issues?q=is%3Aissue+is%3Aopen+org%3ATelluricDeckay).
 
 You may join our [Zulip](https://zulip.com/) chat room at
-[https://telluric-deckay.zulipchat.com/](telluric-deckay.zulipchat.com)
+[telluric-deckay.zulipchat.com](https://telluric-deckay.zulipchat.com/)
 
 ## Bug Reports and Feature Requests
 
-Anyone my open an issue.
+Anyone may open an issue.
 
 ## Coding Standards
 
