@@ -56,6 +56,6 @@ Periodically, you'll need to sync your repo with the upstream.
 GitHub has instructions for doing this
 
 * [Configuring a remote for a fork](https://help.github.com/articles/configuring-a-remote-for-a-fork/)
-  * For step 3 on that page, use https://github.com/TelluricDeckay/`<repo-name>` for the URL.
+  * For step 3 on that page, use ```https://github.com/TelluricDeckay/<repo-name>``` for the URL.
 * [Syncing a Fork](https://help.github.com/articles/syncing-a-fork/)
   * On that page, it shows how to merge the **trunk** branch (steps 4 & 5).
