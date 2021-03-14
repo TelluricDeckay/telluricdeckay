@@ -11,6 +11,7 @@ use iced::{
     Slider, Space, Text, TextInput, Vector,
 };
 
+
 use style::{ButtonStyle, ContainerStyle};
 
 enum Page {
@@ -27,6 +28,7 @@ enum Page {
         call: button::State,
         fold: button::State,
         scroll: scrollables::Variant,
+        game: Game,
     },
     Finish,
 }
@@ -206,7 +208,7 @@ impl<'a> Page {
         )
     }
 
-    fn view(&mut self, game: &Game, bet_sdr_val: f32) -> Element<Message> {
+    fn view(&mut self, bet_sdr_val: f32) -> Element<Message> {
         match *self {
             Page::Menu {
                 ref mut start_button,
@@ -221,6 +223,7 @@ impl<'a> Page {
                 ref mut call,
                 ref mut fold,
                 ref mut scroll,
+                ref mut game,
             } => Self::game(game, bet, bet_amount, bet_sdr_val, call, fold, scroll),
             _ => panic!("state not supported"),
         }
@@ -262,6 +265,10 @@ impl Pages {
                     call: button::State::new(),
                     fold: button::State::new(),
                     scroll: scrollables::Variant::default(),
+                    game: {
+                        let mut g = Game::new();
+                        start(&mut g);
+                    g }
                 },
                 Page::Finish,
             ],
@@ -274,15 +281,22 @@ impl Pages {
         self.pages[self.current].title()
     }
 
-    fn view(&mut self, game: &Game) -> Element<Message> {
-        self.pages[self.current].view(game, self.bet_sdr_val)
+    fn view(&mut self) -> Element<Message> {
+        self.pages[self.current].view(self.bet_sdr_val)
     }
 
-    fn update(&mut self, event: Message, game: &mut Game) {
+    fn update(&mut self, event: Message) {
         match event {
             Message::NewGamePressed => self.current = 1,
             Message::FivePlayerGamePressed => self.current = 2,
-            Message::BetPressed => game.player_bet(4, self.bet_sdr_val as i32),
+            Message::BetPressed => {
+                if let Page::Game { ref mut game, ..} = self.pages[self.current] {
+                    game.player_bet(4, self.bet_sdr_val as i32);
+                }
+                else {
+                    panic!("Bet pressed outside of game context!");
+                }
+            },
             Message::BetAmountChanged(amount) => self.bet_sdr_val = amount,
             Message::CallPressed => (),
             Message::FoldPressed => (),
@@ -293,18 +307,14 @@ impl Pages {
 
 pub struct Gui {
     pages: Pages,
-    game: Game,
 }
 
 impl Sandbox for Gui {
     type Message = Message;
 
     fn new() -> Gui {
-        let mut g = Game::new();
-        start(&mut g);
         Gui {
             pages: Pages::new(),
-            game: g,
         }
     }
 
@@ -313,11 +323,11 @@ impl Sandbox for Gui {
     }
 
     fn update(&mut self, event: Self::Message) {
-        self.pages.update(event, &mut self.game)
+        self.pages.update(event)
     }
 
     fn view(&mut self) -> Element<Self::Message> {
-        Container::new(self.pages.view(&self.game))
+        Container::new(self.pages.view())
             .style(ContainerStyle)
             .width(Length::Fill)
             .height(Length::Fill)
