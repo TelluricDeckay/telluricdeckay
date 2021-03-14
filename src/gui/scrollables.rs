@@ -13,7 +13,18 @@ impl Variant {
     pub fn default() -> Self {
         Self {
             title: "Default Scrollbar",
-            state: scrollable::State::new(),
+            state: {
+                let mut s = scrollable::State::new();
+                // Horrible hack to make the scrollbar scroll to bottom.
+                // TODO: fix this when proper patch is added to iced.
+                // See: https://github.com/hecrj/iced/pull/607#issuecomment-742818666
+                s = unsafe {
+                    let mut tmp = std::mem::transmute::<_, (Option<f32>, f32)>(s);
+                    tmp.1 = 999999.0;
+                    std::mem::transmute::<_, scrollable::State>(tmp)
+                };
+                s
+            },
             scrollbar_width: None,
             scrollbar_margin: None,
             scroller_width: None,
