@@ -1,9 +1,12 @@
-use crate::config;
-use crate::game::{start, Game, HandToImgs};
-use crate::player;
-use ionic_deckhandler::Card;
 mod style;
 mod scrollables;
+mod asset_manager;
+
+use crate::config;
+use crate::game::{start, Game};
+use crate::player;
+use ionic_deckhandler::Card;
+use asset_manager::HandToImgs;
 
 use iced::{
     button, container, pane_grid, scrollable, slider, text_input, Align, Button, Checkbox, Color,
