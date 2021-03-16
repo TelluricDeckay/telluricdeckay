@@ -26,10 +26,6 @@ on a specific issue (or create a ticket if there's not one open yet.
 **Note**: If more than one person submits a patch for the same thing,
 your patch may get rejected.
 
-**Note**: If you agreed to work to work on a ticket but later find that
-you're unable to work on it, or if you changed your mind, please post
-again on the ticket to let everyone know it's up for grabs.
-
 Use [The GitHub flow](https://guides.github.com/introduction/flow/),
 which mostly just involves creating a separate branch for each patch
 you're working on. Using that method helps prevent merge conflicts
