@@ -228,7 +228,6 @@ impl CardToImg for Card {
                 rank: Rank::Two,
                 suit: Suit::Diamonds,
             } => card_img("2D.svg"),
-            _ => panic!("card image missing"),
         }
     }
 }
