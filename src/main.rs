@@ -2,16 +2,14 @@ mod config;
 mod game;
 mod gui;
 mod player;
-use iced::{window::{Settings, Icon}, Sandbox};
-use std::io;
+use iced::{window::Settings, Sandbox, Error};
 
-fn main() -> Result<(), io::Error> {
+fn main() -> Result<(), Error> {
     let mut settings = iced::Settings::default();
     settings.window = Settings {
         // size: (720, 480),
         icon: gui::asset_manager::get_icon(),
         ..Settings::default()
     };
-    gui::Gui::run(settings);
-    Ok(())
+    gui::Gui::run(settings)
 }

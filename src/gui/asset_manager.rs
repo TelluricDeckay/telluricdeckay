@@ -234,7 +234,7 @@ impl CardToImg for Card {
     }
 }
 
-pub trait HandToImgs {
+pub(in crate::gui) trait HandToImgs {
     fn get_hand_imgs(&self) -> Vec<Svg>;
 }
 
