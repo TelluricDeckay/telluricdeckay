@@ -2567,6 +2567,7 @@ dependencies = [
  "configster",
  "dirs 3.0.1",
  "iced",
+ "image",
  "ionic_deckhandler",
  "structopt",
  "telluric-handeval",

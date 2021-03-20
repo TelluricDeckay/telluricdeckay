@@ -1,6 +1,6 @@
 mod style;
 mod scrollables;
-mod asset_manager;
+pub mod asset_manager;
 
 use crate::config;
 use crate::game::{start, Game};

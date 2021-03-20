@@ -1,4 +1,6 @@
-use iced::{Length, Svg};
+use iced::{Length, Svg, window::Icon};
+use image::{io::{Reader as ImageReader}, ImageResult, RgbaImage};
+use std::io;
 use ionic_deckhandler::{Card, Rank, Suit};
 
 // TODO: these assets can take time to load. Perhaps look at way to cache them.
@@ -240,4 +242,26 @@ impl HandToImgs for [Card] {
     fn get_hand_imgs(&self) -> Vec<Svg> {
         self.iter().map(|c| c.get_card_img()).collect()
     }
+}
+
+fn get_rgba8img(filename: &str) -> ImageResult<RgbaImage> {
+    Ok(ImageReader::open(filename)?.decode()?.to_rgba8())
+}
+
+pub fn get_icon() -> Option<Icon> {
+    get_rgba8img(&format!("{}/assets/telluricdeckay.png", telluricdeckay::config_h::get_assetsdir()))
+        .map_or_else(|e| {
+            eprintln!("Could not load image: {:?}", e);
+            None
+        },
+        |rgba8_img| {
+            Icon::from_rgba(rgba8_img.to_vec(), rgba8_img.width(), rgba8_img.height())
+                .map_or_else(
+                    |e| {
+                        eprintln!("Could not load image: {:?}", e);
+                        None
+                    },
+                    |icon| Some(icon)
+                )
+        })
 }
