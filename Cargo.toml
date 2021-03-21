@@ -2,7 +2,7 @@
 name = "telluricdeckay"
 description = "A multiplayer network poker game"
 version = "0.1.0-dev"
-authors = ["andy5995 <andy400-dev@yahoo.com>", "Jammyjamjamman <jdsherratt3@gmail.com>"]
+authors = ["Andy Alt <andy400-dev@yahoo.com>", "Jammyjamjamman <jdsherratt3@gmail.com>"]
 edition = "2018"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
@@ -10,11 +10,14 @@ license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
+iced = { version = "0.2.0", features = ["image", "svg", "debug"] }
+dirs = "3.0.1"
 structopt = "0.3.15"
 configster = "0.1.1"
+image = "0.23"
 #ionic_deckhandler = { path = "../ionic-deckhandler" }
-
-ionic_deckhandler = { git = "https://github.com/TelluricDeckay/ionic-deckhandler", branch = "trunk" }
+ionic_deckhandler = "0.1.0"
+#ionic_deckhandler = { git = "https://github.com/TelluricDeckay/ionic-deckhandler", branch = "trunk" }
 
 #telluric-handeval = { path = "../telluric-handeval" }
 telluric-handeval = { git = "https://github.com/TelluricDeckay/telluric-handeval", branch = "trunk" }

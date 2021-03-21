@@ -5,3 +5,7 @@ Server.listen = 0.0.0.0
 
 testing.interactive = true
 
+max.players = 5
+max.bet = 50
+max.raises = 3
+

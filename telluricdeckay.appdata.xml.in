@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <id>@PACKAGE_TARNAME@.desktop</id>
+  <launchable type="desktop-id">@PACKAGE_TARNAME@.desktop</launchable>
+  <name>@PACKAGE_NAME@</name>
+  <summary>@PACKAGE_NAME@</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT OR Apache-2.0</project_license>
+  <description/>
+  <releases>
+	<release version="@PACKAGE_VERSION@" date="@DATE@"/>
+  </releases>
+  <keywords>
+    <keyword>games</keyword>
+    <keyword>cards</keyword>
+    <keyword>network</keyword>
+    <keyword>multiplayer</keyword>
+  </keywords>
+  <url type="homepage">@PACKAGE_URL@</url>
+  <url type="bugtracker">@PACKAGE_BUGREPORT@</url>
+  <screenshots/>
+</application>

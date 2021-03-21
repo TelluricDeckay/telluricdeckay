@@ -19,9 +19,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Autoconf
+      run: autoconf
+    - name: Configure
+      run: ./configure
     - name: Build
       run: cargo build --verbose
-    - name: Run
-      run: cargo run
     - name: Run tests
       run: cargo test --verbose

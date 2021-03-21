@@ -1,0 +1,132 @@
+datarootdir = @datarootdir@
+
+# DESTDIR will get overridden when it's is used with 'make'
+# (e.g. `make DESTDIR=<dir> {install, uninstall}`).
+#
+# Important to remember that the data directory used by the binary will still
+# be determined by which --prefix value is given to configure, no matter what
+# DESTDIR is set to. Using the DESTDIR variable is primarily intended for
+# packaging.
+#
+# If DESTDIR is used with 'install', the same value needs to be used for
+# 'uninstall' to work.
+# See https://www.gnu.org/prep/standards/html_node/DESTDIR.html for more information.
+#
+DESTDIR=@prefix@
+BIN_DEST=$(DESTDIR)/games
+
+CARD_FILES =	\
+	LICENSE	\
+	1B.svg	\
+	2B.svg	\
+	AC.svg	\
+	2C.svg	\
+	3C.svg	\
+	4C.svg	\
+	5C.svg	\
+	6C.svg	\
+	7C.svg	\
+	8C.svg	\
+	9C.svg	\
+	TC.svg	\
+	JC.svg	\
+	QC.svg	\
+	KC.svg	\
+	AH.svg	\
+	2H.svg	\
+	3H.svg	\
+	4H.svg	\
+	5H.svg	\
+	6H.svg	\
+	7H.svg	\
+	8H.svg	\
+	9H.svg	\
+	TH.svg	\
+	JH.svg	\
+	QH.svg	\
+	KH.svg	\
+	AD.svg	\
+	2D.svg	\
+	3D.svg	\
+	4D.svg	\
+	5D.svg	\
+	6D.svg	\
+	7D.svg	\
+	8D.svg	\
+	9D.svg	\
+	TD.svg	\
+	JD.svg	\
+	QD.svg	\
+	KD.svg	\
+	AS.svg	\
+	2S.svg	\
+	3S.svg	\
+	4S.svg	\
+	5S.svg	\
+	6S.svg	\
+	7S.svg	\
+	8S.svg	\
+	9S.svg	\
+	TS.svg	\
+	JS.svg	\
+	QS.svg	\
+	KS.svg	\
+
+
+CLEAN_FILES =	\
+	telluricdeckay.desktop	\
+	telluricdeckay.appdata.xml	\
+	config_h.rs
+
+DISTCLEAN_FILES =	\
+	Makefile	\
+	config.status	\
+	config.log
+
+devbuild:
+	cargo build
+
+build:
+	# The cargo binary can't be found when `sudo` is used to `make install`
+	# You'll need to run 'cargo build --release' to update the binary.
+
+install: build
+	install -D -s -m 0755 ./target/release/telluricdeckay -t $(BIN_DEST)
+	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@datadir@/telluricdeckay/assets/cards
+	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@datadir@/appdata
+	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@datadir@/applications
+	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@datadir@/pixmaps
+
+uninstall:
+	if test -f $(BIN_DEST)/telluricdeckay; then	\
+		$(RM) $(BIN_DEST)/telluricdeckay;	\
+	fi;	\
+	if test -f $(DESTDIR)@datadir@/appdata/telluricdeckay.appdata.xml; then	\
+		$(RM) $(DESTDIR)@datadir@/appdata/telluricdeckay.appdata.xml;	\
+	fi;	\
+	if test -f $(DESTDIR)@datadir@/applications/telluricdeckay.desktop; then	\
+		$(RM) $(DESTDIR)@datadir@/applications/telluricdeckay.desktop;	\
+	fi;	\
+	if test -f $(DESTDIR)@datadir@/pixmaps/telluricdeckay.png; then	\
+		$(RM) $(DESTDIR)@datadir@/pixmaps/telluricdeckay.png;	\
+	fi;	\
+	for card in $(CARD_FILES); do	\
+		file="$(DESTDIR)@datadir@/telluricdeckay/assets/cards/"$$card;	\
+		if test -f $$file; then	\
+			$(RM) $$file;	\
+		fi;	\
+	done
+
+clean:
+	for file in $(CLEAN_FILES); do	\
+		if test -f $$file; then	\
+			$(RM) $$file;	\
+		fi;	\
+	done
+
+distclean: clean
+	for file in $(DISTCLEAN_FILES); do	\
+		if test -f $$file; then	\
+			$(RM) $$file;	\
+		fi;	\
+	done

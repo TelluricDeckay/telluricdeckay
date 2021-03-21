@@ -1,1 +1,10 @@
 /target
+/config.log
+/config.status
+/configure
+/Makefile
+/src/config_h.rs
+/telluricdeckay.appdata.xml
+/telluricdeckay.desktop
+/autom4te.cache/
+/pkg/
