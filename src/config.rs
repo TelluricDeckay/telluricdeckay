@@ -99,12 +99,6 @@ pub fn get() -> Data {
         cli_options::get_version();
     }
 
-    // This var is also used when cli options are parsed
-    let mut testing_interactive: bool = false;
-    if opt.interactive {
-        testing_interactive = true;
-    }
-
     let mut config_data = Data::new();
     let config_file = get_filename(opt.custom_config_file, &config_data);
     let config_vec = configster::parse_file(&config_file, ',').expect("Error reading config file");
@@ -117,7 +111,6 @@ pub fn get() -> Data {
             "Server.port" => {
                 config_data.server_port = i.value.primary.parse().expect("Invalid port number")
             }
-            "testing.interactive" => testing_interactive = true,
             "max.players" => {
                 config_data.max_players = i
                     .value
