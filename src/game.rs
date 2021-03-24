@@ -1,5 +1,6 @@
 use crate::player::{self, Player};
 use ionic_deckhandler::{Card, Deck};
+use telluric_handeval::poker::{HandRank, PokerRankedHand};
 
 #[derive(Debug)]
 pub struct Game {
@@ -123,9 +124,9 @@ pub fn start(new_game: &mut Game) {
         .push(format!("Total in pot = ${}", new_game.pot));
     for pl in new_game.players.iter_mut() {
         new_game.status.push(format!(
-            "Player {} got a {} and has {} chips remaining",
+            "Player {} got a {:?} and has {} chips remaining",
             pl.name,
-            telluric_handeval::poker::evaluate(&mut pl.hand).0.name(),
+            pl.hand.evaluate_hand(),
             pl.chips
         ));
     }
