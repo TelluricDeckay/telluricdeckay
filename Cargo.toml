@@ -19,5 +19,5 @@ image = "0.23"
 ionic_deckhandler = "0.1.0"
 #ionic_deckhandler = { git = "https://github.com/TelluricDeckay/ionic-deckhandler", branch = "trunk" }
 
-#telluric-handeval = { path = "../telluric-handeval" }
-telluric-handeval = { git = "https://github.com/TelluricDeckay/telluric-handeval", branch = "trunk" }
+#telluric_handeval = { path = "../telluric_handeval" }
+telluric_handeval = { git = "https://github.com/TelluricDeckay/telluric_handeval", branch = "trunk" }
