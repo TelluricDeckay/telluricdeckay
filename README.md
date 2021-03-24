@@ -44,3 +44,15 @@ To uninstall:
     make uninstall
 
 (If DESTDIR was used with 'install', it must be also be used with 'uninstall'.
+
+## Contributing
+
+See
+[CONTRIBUTING.md](https://github.com/TelluricDeckay/telluricdeckay/blob/trunk/CONTRIBUTING.md)
+
+## Help and Support
+
+* [Discussions](https://github.com/TelluricDeckay/telluricdeckay/discussions)
+* [Issues](https://github.com/TelluricDeckay/telluricdeckay/issues)
+* [Chat room](https://telluric-deckay.zulipchat.com/)
+* Emails listed in [Cargo.toml](https://github.com/TelluricDeckay/telluricdeckay/blob/trunk/Cargo.toml)
