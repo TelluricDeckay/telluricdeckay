@@ -8,7 +8,7 @@ impl button::StyleSheet for ButtonStyle {
             background: Some(Color::from_rgb8(0x4A, 0x1B, 0x46).into()),
             border_radius: 2.0,
             shadow_offset: Vector::new(1.0, 1.0),
-            text_color: Color::from_rgb8(0xA8, 0xA3, 0x6B).into(),
+            text_color: Color::from_rgb8(0xA8, 0xA3, 0x6B),
             ..button::Style::default()
         }
     }
@@ -29,7 +29,7 @@ impl container::StyleSheet for ContainerStyle {
         container::Style {
             background: Some(Color::from_rgb8(0x3A, 0x38, 0x5B).into()),
             text_color: Color::from_rgb8(0xA8, 0xA3, 0x6B).into(),
-            border_color: Color::from_rgb8(0xA8, 0xA3, 0x6B).into(),
+            border_color: Color::from_rgb8(0xA8, 0xA3, 0x6B),
             ..container::Style::default()
         }
     }

@@ -1,6 +1,6 @@
 use crate::player::{self, Player};
 use ionic_deckhandler::{Card, Deck};
-use telluric_handeval::poker::{HandRank, PokerRankedHand};
+use telluric_handeval::poker::PokerRankedHand;
 
 #[derive(Debug)]
 pub struct Game {

@@ -1,6 +1,5 @@
 use iced::{Length, Svg, window::Icon};
 use image::{io::{Reader as ImageReader}, ImageResult, RgbaImage};
-use std::io;
 use ionic_deckhandler::{Card, Rank, Suit};
 
 // TODO: these assets can take time to load. Perhaps look at way to cache them.
