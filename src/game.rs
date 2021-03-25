@@ -2,6 +2,9 @@ use crate::player::{self, Player};
 use ionic_deckhandler::{Card, Deck};
 use telluric_handeval::poker::PokerRankedHand;
 
+// imported macros
+use telluric_handeval::stringify;
+
 #[derive(Debug)]
 pub struct Game {
     pub players: Vec<Player>,
@@ -126,7 +129,7 @@ pub fn start(new_game: &mut Game) {
         new_game.status.push(format!(
             "Player {} got a {:?} and has {} chips remaining",
             pl.name,
-            pl.hand.evaluate_hand(),
+            stringify!(pl.hand.evaluate_hand()),
             pl.chips
         ));
     }
