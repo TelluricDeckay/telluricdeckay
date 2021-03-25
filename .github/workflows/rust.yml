@@ -27,3 +27,7 @@ jobs:
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+    - name: cargo update
+      run: cargo update
+    - name: Build after cargo update
+      run: cargo build
