@@ -10,10 +10,6 @@ pub mod cli_options {
         #[structopt(short = "V", long = "version")]
         pub version: bool,
 
-        // Interactive (for testing)
-        #[structopt(short = "i", long = "interactive")]
-        pub interactive: bool,
-
         // Specify path/filename of alternate configuration file
         #[structopt(short = "c", long = "config")]
         pub custom_config_file: Option<String>,
