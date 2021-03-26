@@ -11,7 +11,6 @@ publish = false
 
 [dependencies]
 iced = { version = "0.2.0", features = ["image", "svg", "debug"] }
-cargo-i18n = "0.2.4"
 i18n-embed = { version = "0.11.0", features = ["gettext-system", "desktop-requester"]}
 rust-embed = "5.9.0"
 tr = "0.1.6"

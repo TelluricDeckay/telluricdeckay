@@ -1,46 +1,46 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE telluricdeckay'S COPYRIGHT HOLDER
+# Dutch translations for telluricdeckay package.
+# Copyright (C) 2021 THE telluricdeckay'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the telluricdeckay package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Andy <andy400-dev@yahoo.com>, 2021.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: telluricdeckay 0.1.0-dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-26 05:14+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2021-03-26 05:10+0000\n"
+"PO-Revision-Date: 2021-03-26 00:10-0500\n"
+"Last-Translator: Andy <andy400-dev@yahoo.com>\n"
+"Language-Team: Dutch\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ./src/game.rs:37
+#: src/game.rs:37
 msgid "You must bet all your chips."
 msgstr ""
 
-#: ./src/game.rs:50
+#: src/game.rs:50
 msgid "{} bets {} chips."
 msgstr ""
 
-#: ./src/game.rs:125
+#: src/game.rs:125
 msgid "Total in pot = ${}"
 msgstr ""
 
-#: ./src/game.rs:127
+#: src/game.rs:127
 msgid "Player {} got a {} and has {} chips remaining"
 msgstr ""
 
-#: ./src/gui/mod.rs:73
+#: src/gui/mod.rs:73
 msgid "Start"
 msgstr ""
 
-#: ./src/player.rs:53
+#: src/player.rs:53
 msgid "{} calls bet of ${}"
 msgstr ""
 
-#: ./src/player.rs:82
+#: src/player.rs:82
 msgid "{} checks."
 msgstr ""

@@ -30,7 +30,6 @@ msgid "Total in pot = ${}"
 msgstr "Insgesamt im Topf = ${}"
 
 #: src/game.rs:127
-#, fuzzy
 msgid "Player {} got a {} and has {} chips remaining"
 msgstr "Spieler {} hat ein {} und hat noch {} Chips"
 
@@ -45,6 +44,3 @@ msgstr "{} passt zum Einsatz von ${}"
 #: src/player.rs:82
 msgid "{} checks."
 msgstr "{} geht vorbei."
-
-#~ msgid "Welcome to TelluricDeckay!"
-#~ msgstr "Willkommen in TelluricDeckay!"

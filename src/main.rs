@@ -2,17 +2,18 @@ mod config;
 mod game;
 mod gui;
 mod player;
+use iced::{window::Settings, Sandbox, Error};
+
+// localization
 use i18n_embed::{DesktopLanguageRequester,
     gettext::gettext_language_loader};
 use rust_embed::RustEmbed;
+// import macros
+use tr::tr_init;
 
 #[derive(RustEmbed)]
 #[folder = "i18n/mo"] // path to the compiled localization resources
 struct Translations;
-use iced::{window::Settings, Sandbox, Error};
-
-// import macros
-use tr::tr_init;
 
 fn main() -> Result<(), Error> {
     tr_init!("/usr/share/locale/");
