@@ -14,22 +14,26 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-    - name: Autoconf
-      run: autoconf
-    - name: Configure
-      run: ./configure
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
-    - name: cargo clean
-      run: cargo clean
-    - name: cargo update
-      run: cargo update
-    - name: Build after cargo update
-      run: cargo build
+    - run: autoconf
+    - run: ./configure
+    - run: cargo build --verbose
+    - run: cargo test --verbose
+  test_install:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: autoconf
+# the prefix is later used for 'make install' (unless using sudo, the
+# target directory needs to have normal user write permissions).
+    - run: ./configure --prefix=$PWD
+    - run: cargo update
+
+# Now build to make sure a `cargo update` won't change results of the
+# build. The install target looks for a release build, so going to first
+# build with the --release flag.
+    - run: cargo build --release
+    - run: make install
+    - run: make uninstall
