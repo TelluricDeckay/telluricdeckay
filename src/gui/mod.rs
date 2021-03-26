@@ -1,6 +1,6 @@
-mod style;
-mod scrollables;
 pub mod asset_manager;
+mod scrollables;
+mod style;
 
 use crate::config;
 use crate::game::{start, Game};
@@ -13,7 +13,6 @@ use iced::{
     Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable,
     Slider, Space, Text, TextInput, Vector,
 };
-
 
 use style::{ButtonStyle, ContainerStyle};
 
@@ -201,13 +200,11 @@ impl<'a> Page {
                 .push(
                     Self::container("State", 20)
                         .push(Text::new(format!("Chips in pot: {}", game.pot)).size(15))
-                        .push(
-                            game.status.iter()
-                                .fold(Scrollable::new(&mut scroll.state).height(350.into()),
-                                    |s, msg| s.push(Text::new(msg).size(15))
-                                ),
-                        ),
-                )
+                        .push(game.status.iter().fold(
+                            Scrollable::new(&mut scroll.state).height(350.into()),
+                            |s, msg| s.push(Text::new(msg).size(15)),
+                        )),
+                ),
         )
     }
 
@@ -271,7 +268,8 @@ impl Pages {
                     game: {
                         let mut g = Game::new();
                         start(&mut g);
-                    g }
+                        g
+                    },
                 },
                 Page::Finish,
             ],
@@ -293,13 +291,12 @@ impl Pages {
             Message::NewGamePressed => self.current = 1,
             Message::FivePlayerGamePressed => self.current = 2,
             Message::BetPressed => {
-                if let Page::Game { ref mut game, ..} = self.pages[self.current] {
+                if let Page::Game { ref mut game, .. } = self.pages[self.current] {
                     game.player_bet(4, self.bet_sdr_val as i32);
-                }
-                else {
+                } else {
                     panic!("Bet pressed outside of game context!");
                 }
-            },
+            }
             Message::BetAmountChanged(amount) => self.bet_sdr_val = amount,
             Message::CallPressed => (),
             Message::FoldPressed => (),

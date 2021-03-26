@@ -1,13 +1,12 @@
 mod config;
+mod config_h;
 mod game;
 mod gui;
 mod player;
-mod config_h;
-use iced::{window::Settings, Sandbox, Error};
+use iced::{window::Settings, Error, Sandbox};
 
 // localization
-use i18n_embed::{DesktopLanguageRequester,
-    gettext::gettext_language_loader};
+use i18n_embed::{gettext::gettext_language_loader, DesktopLanguageRequester};
 use rust_embed::RustEmbed;
 // import macros
 use tr::tr_init;

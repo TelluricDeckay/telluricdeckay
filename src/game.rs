@@ -31,8 +31,7 @@ impl Game {
                 self.status
                     .push("Bet is less than initial plus raises.".to_string());
                 return;
-            }
-            else if bet_amount < self.players[player_id].chips {
+            } else if bet_amount < self.players[player_id].chips {
                 self.status
                     .push(tr!("You must bet all your chips.").to_string());
                 return;
@@ -41,14 +40,14 @@ impl Game {
         if self.players[player_id].chips < bet_amount {
             self.status
                 .push("Bet exceeds player's remaining chips!".to_string());
-        }
-        else {
+        } else {
             self.players[player_id].chips -= bet_amount;
             self.pot += bet_amount;
             self.round.initial_bet_plus_raises = bet_amount;
             self.status.push(tr!(
                 "{} bets {} chips.",
-                self.players[player_id].name, bet_amount
+                self.players[player_id].name,
+                bet_amount
             ));
         }
     }
@@ -124,7 +123,8 @@ pub fn start(new_game: &mut Game) {
         .status
         .push(tr!("Total in pot = ${}", new_game.pot));
     for pl in new_game.players.iter_mut() {
-        new_game.status.push(tr!("Player {} got a {} and has {} chips remaining",
+        new_game.status.push(tr!(
+            "Player {} got a {} and has {} chips remaining",
             pl.name,
             pl.hand.evaluate_hand().stringify(),
             pl.chips
@@ -222,11 +222,13 @@ pub fn round(new_game: &mut Game) {
                             new_game.round.initial_bet_plus_raises = input_open;
                         }
                         player::Action::Fold => {
-                            new_game.status.push(player::fold(&pl.name, &mut pl.has_folded));
+                            new_game
+                                .status
+                                .push(player::fold(&pl.name, &mut pl.has_folded));
                         }
                         player::Action::Check => new_game.status.push(player::check(&pl.name)),
                         _ => println!("!Condition mismatch 1"),
-                         // The UI should only allow the options above
+                        // The UI should only allow the options above
                     }
                 }
 
@@ -262,7 +264,9 @@ pub fn round(new_game: &mut Game) {
                                 &mut new_game.pot,
                             ));
                         }
-                        player::Action::Fold => new_game.status.push(player::fold(&pl.name, &mut pl.has_folded)),
+                        player::Action::Fold => new_game
+                            .status
+                            .push(player::fold(&pl.name, &mut pl.has_folded)),
                         _ => println!("!Condition mismatch 2"),
                     }
                 }

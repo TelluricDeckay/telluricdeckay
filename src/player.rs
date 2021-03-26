@@ -44,14 +44,13 @@ pub fn call(
     pl_total_amount_added_this_round: &mut i32,
     initial_bet_plus_raises: &i32,
     pot: &mut i32,
-)-> String  {
+) -> String {
     let t = initial_bet_plus_raises - *pl_total_amount_added_this_round;
     *chips -= t;
     *pl_total_amount_added_this_round += t;
     *pot += t;
 
     tr!("{} calls bet of ${}", name, t)
-
 }
 
 pub fn raise(
@@ -62,7 +61,7 @@ pub fn raise(
     initial_bet_plus_raises: &mut i32,
     pot: &mut i32,
 ) -> String {
-   let call_message = call(
+    let call_message = call(
         name,
         chips,
         pl_total_amount_added_this_round,
@@ -75,7 +74,7 @@ pub fn raise(
     *pl_total_amount_added_this_round += t;
     *pot += t;
     *initial_bet_plus_raises += input_raise;
-    format!("{} and raises ${}",call_message, input_raise)
+    format!("{} and raises ${}", call_message, input_raise)
 }
 
 pub fn check(name: &str) -> String {

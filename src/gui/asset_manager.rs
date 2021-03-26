@@ -1,5 +1,5 @@
-use iced::{Length, Svg, window::Icon};
-use image::{io::{Reader as ImageReader}, ImageResult, RgbaImage};
+use iced::{window::Icon, Length, Svg};
+use image::{io::Reader as ImageReader, ImageResult, RgbaImage};
 use ionic_deckhandler::{Card, Rank, Suit};
 
 // TODO: these assets can take time to load. Perhaps look at way to cache them.
@@ -248,19 +248,23 @@ fn get_rgba8img(filename: &str) -> ImageResult<RgbaImage> {
 }
 
 pub fn get_icon() -> Option<Icon> {
-    get_rgba8img(&format!("{}/assets/telluricdeckay.png", telluricdeckay::config_h::get_assetsdir()))
-        .map_or_else(|e| {
+    get_rgba8img(&format!(
+        "{}/assets/telluricdeckay.png",
+        telluricdeckay::config_h::get_assetsdir()
+    ))
+    .map_or_else(
+        |e| {
             eprintln!("Could not load image: {:?}", e);
             None
         },
         |rgba8_img| {
-            Icon::from_rgba(rgba8_img.to_vec(), rgba8_img.width(), rgba8_img.height())
-                .map_or_else(
-                    |e| {
-                        eprintln!("Could not load image: {:?}", e);
-                        None
-                    },
-                    |icon| Some(icon)
-                )
-        })
+            Icon::from_rgba(rgba8_img.to_vec(), rgba8_img.width(), rgba8_img.height()).map_or_else(
+                |e| {
+                    eprintln!("Could not load image: {:?}", e);
+                    None
+                },
+                |icon| Some(icon),
+            )
+        },
+    )
 }

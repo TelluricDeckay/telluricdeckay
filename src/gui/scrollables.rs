@@ -1,4 +1,3 @@
-
 use iced::scrollable;
 
 pub struct Variant {
@@ -30,7 +29,7 @@ impl Variant {
             scroller_width: None,
         }
     }
-    
+
     pub fn all() -> Vec<Self> {
         vec![
             Variant::default(),
