@@ -129,7 +129,7 @@ pub fn start(new_game: &mut Game) {
         new_game.status.push(format!(
             "Player {} got a {:?} and has {} chips remaining",
             pl.name,
-            stringify!(pl.hand.evaluate_hand()),
+            pl.hand.evaluate_hand().stringify(),
             pl.chips
         ));
     }
