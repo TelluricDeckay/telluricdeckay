@@ -2,9 +2,6 @@ use crate::player::{self, Player};
 use ionic_deckhandler::{Card, Deck};
 use telluric_handeval::poker::PokerRankedHand;
 
-// imported macros
-use telluric_handeval::stringify;
-
 #[derive(Debug)]
 pub struct Game {
     pub players: Vec<Player>,
