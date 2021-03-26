@@ -1,6 +1,7 @@
 use crate::player::{self, Player};
 use ionic_deckhandler::{Card, Deck};
 use telluric_handeval::poker::PokerRankedHand;
+use tr::tr;
 
 #[derive(Debug)]
 pub struct Game {
@@ -33,7 +34,7 @@ impl Game {
             }
             else if bet_amount < self.players[player_id].chips {
                 self.status
-                    .push("You must bet all your chips.".to_string());
+                    .push(tr!("You must bet all your chips.").to_string());
                 return;
             }
         }
@@ -45,7 +46,7 @@ impl Game {
             self.players[player_id].chips -= bet_amount;
             self.pot += bet_amount;
             self.round.initial_bet_plus_raises = bet_amount;
-            self.status.push(format!(
+            self.status.push(tr!(
                 "{} bets {} chips.",
                 self.players[player_id].name, bet_amount
             ));
@@ -121,10 +122,9 @@ pub fn start(new_game: &mut Game) {
     // Showdown
     new_game
         .status
-        .push(format!("Total in pot = ${}", new_game.pot));
+        .push(tr!("Total in pot = ${}", new_game.pot));
     for pl in new_game.players.iter_mut() {
-        new_game.status.push(format!(
-            "Player {} got a {:?} and has {} chips remaining",
+        new_game.status.push(tr!("Player {} got a {} and has {} chips remaining",
             pl.name,
             pl.hand.evaluate_hand().stringify(),
             pl.chips

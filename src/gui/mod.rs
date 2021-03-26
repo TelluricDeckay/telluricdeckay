@@ -6,6 +6,7 @@ use crate::config;
 use crate::game::{start, Game};
 use crate::player;
 use asset_manager::HandToImgs;
+use tr::tr;
 
 use iced::{
     button, container, pane_grid, scrollable, slider, text_input, Align, Button, Checkbox, Color,
@@ -69,7 +70,7 @@ impl<'a> Page {
             .push(
                 Button::new(
                     button_state,
-                    Text::new("Start").horizontal_alignment(HorizontalAlignment::Center),
+                    Text::new(tr!("Start")).horizontal_alignment(HorizontalAlignment::Center),
                 )
                 .on_press(Message::NewGamePressed)
                 .style(ButtonStyle),
