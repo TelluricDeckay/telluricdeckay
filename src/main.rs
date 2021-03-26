@@ -2,6 +2,7 @@ mod config;
 mod game;
 mod gui;
 mod player;
+mod config_h;
 use iced::{window::Settings, Sandbox, Error};
 
 // localization
@@ -16,7 +17,7 @@ use tr::tr_init;
 struct Translations;
 
 fn main() -> Result<(), Error> {
-    tr_init!("/usr/share/locale/");
+    tr_init!(crate::config_h::get_localedir());
     let translations = Translations {};
     let language_loader = gettext_language_loader!();
 
