@@ -6,3 +6,7 @@ pub fn get_assetsdir() -> &'static str {
   }
   "@prefix@/share/@PACKAGE_TARNAME@"
 }
+
+pub fn get_localedir() -> &'static str {
+  "@prefix@/share/locale"
+}

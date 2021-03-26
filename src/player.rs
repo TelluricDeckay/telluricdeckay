@@ -1,5 +1,6 @@
 // use crate::game::Game;
 use ionic_deckhandler::{Card, Rank, Suit};
+use tr::tr;
 
 #[derive(Debug, Copy, Clone)]
 pub enum Action {
@@ -49,7 +50,7 @@ pub fn call(
     *pl_total_amount_added_this_round += t;
     *pot += t;
 
-    format!("{} calls bet of ${}", name, t)
+    tr!("{} calls bet of ${}", name, t)
 
 }
 
@@ -78,7 +79,7 @@ pub fn raise(
 }
 
 pub fn check(name: &str) -> String {
-    format!("{} checks.", name)
+    tr!("{} checks.", name)
 }
 
 // Players that fold shouldn't be popped from the 'players' vector;
