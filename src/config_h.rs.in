@@ -1,26 +1,25 @@
-pub mod global {
 
-  use std::path::Path;
 
-  fn get_datadir() -> &'static str {
-    "@prefix@/share/"
+use std::path::Path;
+
+fn get_datadir() -> &'static str {
+  "@prefix@/share/"
+}
+
+pub fn get_assetsdir() -> String {
+  if Path::new("./assets/cards").exists() {
+    return ".".to_owned();
   }
+  format!("{}/{}", get_datadir(), "@PACKAGE_TARNAME@")
+}
 
-  pub fn get_assetsdir() -> String {
-    if Path::new("./assets/cards").exists() {
-      return ".".to_owned();
-    }
-    format!("{}/{}", get_datadir(), "@PACKAGE_TARNAME@")
-  }
+pub fn get_localedir() -> String {
+  format!("{}/{}", get_datadir(), "locale")
+}
 
-  pub fn get_localedir() -> String {
-    format!("{}/{}", get_datadir(), "locale")
+pub fn get_pixmapsdir() -> String {
+  if Path::new("./assets").exists() {
+    return "./assets".to_owned();
   }
-
-  pub fn get_pixmapsdir() -> String {
-    if Path::new("./assets").exists() {
-      return "./assets".to_owned();
-    }
-    format!("{}/{}", get_datadir(), "pixmaps")
-  }
+  format!("{}/{}", get_datadir(), "pixmaps")
 }
