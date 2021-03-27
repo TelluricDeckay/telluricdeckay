@@ -10,8 +10,8 @@ use tr::tr;
 
 use iced::{
     button, container, pane_grid, scrollable, slider, text_input, Align, Button, Checkbox, Color,
-    Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable,
-    Slider, Space, Text, TextInput, Vector,
+    Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Scrollable,
+    Slider, Space, Text, TextInput, Vector, executor, Application, Command
 };
 
 use style::{ButtonStyle, ContainerStyle};
@@ -309,21 +309,27 @@ pub struct Gui {
     pages: Pages,
 }
 
-impl Sandbox for Gui {
+impl Application for Gui {
+    type Executor = executor::Default;
     type Message = Message;
+    type Flags = ();
 
-    fn new() -> Gui {
-        Gui {
+    fn new(_flags: ()) -> (Gui, Command<Message>){
+        (
+            Gui {
             pages: Pages::new(),
-        }
+            },
+            Command::none(),
+        )
     }
 
     fn title(&self) -> String {
         self.pages.title()
     }
 
-    fn update(&mut self, event: Self::Message) {
-        self.pages.update(event)
+    fn update(&mut self, event: Message) -> Command<Message> {
+        self.pages.update(event);
+        Command::none()
     }
 
     fn view(&mut self) -> Element<Self::Message> {
