@@ -1,5 +1,6 @@
 mod config;
 mod config_h;
+use config_h::global;
 mod game;
 mod gui;
 mod player;
@@ -16,7 +17,7 @@ use tr::tr_init;
 struct Translations;
 
 fn main() -> Result<(), Error> {
-    tr_init!(crate::config_h::get_localedir());
+    tr_init!(global::get_localedir());
     let translations = Translations {};
     let language_loader = gettext_language_loader!();
 
