@@ -16,7 +16,7 @@ use tr::tr_init;
 struct Translations;
 
 fn main() -> Result<(), Error> {
-    tr_init!(crate::config_h::get_localedir());
+    tr_init!(config_h::get_localedir());
     let translations = Translations {};
     let language_loader = gettext_language_loader!();
 
