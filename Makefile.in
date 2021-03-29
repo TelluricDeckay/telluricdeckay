@@ -79,9 +79,6 @@ DISTCLEAN_FILES =	\
 	config.status	\
 	config.log
 
-devbuild:
-	cargo build
-
 build:
 	# The cargo binary can't be found when `sudo` is used to `make install`
 	# You'll need to run 'cargo build --release' to update the binary.
@@ -92,6 +89,9 @@ install: build
 	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
 	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@DATADIR@/applications
 	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@DATADIR@/pixmaps
+
+install-strip: install
+	strip $(DESTDIR)@BINDIR@/telluricdeckay
 
 uninstall:
 	if test -f $(DESTDIR)@BINDIR@/telluricdeckay; then	\
