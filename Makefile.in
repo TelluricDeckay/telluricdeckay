@@ -75,15 +75,13 @@ DOC_FILES =	\
 	LICENSE-MIT	\
 	LICENSE-APACHE
 
-CLEAN_FILES =	\
-	telluricdeckay.desktop	\
-	telluricdeckay.appdata.xml	\
-	config_h.rs
-
 DISTCLEAN_FILES =	\
 	Makefile	\
 	config.status	\
-	config.log
+	config.log	\
+	telluricdeckay.desktop	\
+	telluricdeckay.appdata.xml	\
+	src/config_h.rs
 
 build:
 	# You need to run 'cargo build --release' to build or update the binary.
@@ -129,14 +127,7 @@ uninstall:
 		fi;	\
 	done
 
-clean:
-	for file in $(CLEAN_FILES); do	\
-		if test -f $$file; then	\
-			$(RM) $$file;	\
-		fi;	\
-	done
-
-distclean: clean
+distclean:
 	for file in $(DISTCLEAN_FILES); do	\
 		if test -f $$file; then	\
 			$(RM) $$file;	\
