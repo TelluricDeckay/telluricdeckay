@@ -17,7 +17,8 @@ In early development, not ready for use yet
 
 ## Installation
 
-No distribution packages are available. To install from source:
+No distribution packages are available. Installation is not required to
+run the game and is primarily intended for packagers.
 
     autoconf (only needs to be run once, unless configure.ac is changed)
     ./configure --prefix=<dir> (or with no prefix given; defaults to /usr/local)

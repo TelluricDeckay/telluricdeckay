@@ -1,5 +1,3 @@
-datarootdir = @datarootdir@
-
 # DESTDIR will get overridden when it's is used with 'make'
 # (e.g. `make DESTDIR=<dir> {install, uninstall}`).
 #
@@ -12,8 +10,6 @@ datarootdir = @datarootdir@
 # 'uninstall' to work.
 # See https://www.gnu.org/prep/standards/html_node/DESTDIR.html for more information.
 #
-DESTDIR=@prefix@
-BIN_DEST=$(DESTDIR)/games
 
 CARD_FILES =	\
 	LICENSE	\
@@ -91,27 +87,27 @@ build:
 	# You'll need to run 'cargo build --release' to update the binary.
 
 install: build
-	install -D -s -m 0755 ./target/release/telluricdeckay -t $(BIN_DEST)
-	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@datadir@/telluricdeckay/assets/cards
-	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@datadir@/appdata
-	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@datadir@/applications
-	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@datadir@/pixmaps
+	install -D -s -m 0755 ./target/release/telluricdeckay -t $(DESTDIR)@BINDIR@
+	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@DATADIR@/telluricdeckay/assets/cards
+	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
+	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@DATADIR@/applications
+	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@DATADIR@/pixmaps
 
 uninstall:
-	if test -f $(BIN_DEST)/telluricdeckay; then	\
-		$(RM) $(BIN_DEST)/telluricdeckay;	\
+	if test -f $(DESTDIR)@BINDIR@/telluricdeckay; then	\
+		$(RM) $(DESTDIR)@BINDIR@/telluricdeckay;	\
 	fi;	\
-	if test -f $(DESTDIR)@datadir@/appdata/telluricdeckay.appdata.xml; then	\
-		$(RM) $(DESTDIR)@datadir@/appdata/telluricdeckay.appdata.xml;	\
+	if test -f $(DESTDIR)@DATADIR@/appdata/telluricdeckay.appdata.xml; then	\
+		$(RM) $(DESTDIR)@DATADIR@/appdata/telluricdeckay.appdata.xml;	\
 	fi;	\
-	if test -f $(DESTDIR)@datadir@/applications/telluricdeckay.desktop; then	\
-		$(RM) $(DESTDIR)@datadir@/applications/telluricdeckay.desktop;	\
+	if test -f $(DESTDIR)@DATADIR@/applications/telluricdeckay.desktop; then	\
+		$(RM) $(DESTDIR)@DATADIR@/applications/telluricdeckay.desktop;	\
 	fi;	\
-	if test -f $(DESTDIR)@datadir@/pixmaps/telluricdeckay.png; then	\
-		$(RM) $(DESTDIR)@datadir@/pixmaps/telluricdeckay.png;	\
+	if test -f $(DESTDIR)@DATADIR@/pixmaps/telluricdeckay.png; then	\
+		$(RM) $(DESTDIR)@DATADIR@/pixmaps/telluricdeckay.png;	\
 	fi;	\
 	for card in $(CARD_FILES); do	\
-		file="$(DESTDIR)@datadir@/telluricdeckay/assets/cards/"$$card;	\
+		file="$(DESTDIR)@DATADIR@/telluricdeckay/assets/cards/"$$card;	\
 		if test -f $$file; then	\
 			$(RM) $$file;	\
 		fi;	\

@@ -3,7 +3,7 @@
 use std::path::Path;
 
 fn get_datadir() -> &'static str {
-  "@prefix@/share/"
+  "@DATADIR@"
 }
 
 pub fn get_assetsdir() -> String {

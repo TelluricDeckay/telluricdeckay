@@ -11,6 +11,24 @@ AC_INIT([Telluric Deckay],
 DATE=$(date)
 AC_SUBST(DATE)
 
+# if --datadir was not given to ./configure, then $datadir will = the
+# literal string "${datarootdir}"
+if test "x$datadir" != x\$\{datarootdir\}; then
+    DATADIR=${datadir}
+else
+    DATADIR=${prefix}/share
+fi
+AC_SUBST(DATADIR)
+
+# if --bindir was not given to ./configure, then $bindir will = the
+# literal string "${exec_prefix}\bin"
+if test "x$bindir" != x\$\{exec_prefix\}\/bin; then
+    BINDIR=${bindir}
+else
+    BINDIR=${prefix}/games
+fi
+AC_SUBST(BINDIR)
+
 AC_CONFIG_FILES([Makefile
                  telluricdeckay.desktop
                  telluricdeckay.appdata.xml
@@ -18,3 +36,9 @@ AC_CONFIG_FILES([Makefile
 
 # Creates the files above by reading their corresponding .in file
 AC_OUTPUT
+
+echo -e
+echo installation prefix = $prefix
+echo The binary will be installed to $BINDIR
+echo datadir = $DATADIR
+echo -e
