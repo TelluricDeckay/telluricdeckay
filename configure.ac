@@ -32,6 +32,16 @@ else
 fi
 AC_SUBST(DATADIR)
 
+# if --docdir was not given to ./configure, then $docdir will = the
+# literal string "${datarootdir}/doc"
+if test "x$docdir" != x\$\{datarootdir\}\/doc\/\$\{PACKAGE_TARNAME\}; then
+    DOCDIR=${docdir}
+else
+    DOCDIR=$DATADIR/doc/$PACKAGE_TARNAME
+fi
+AC_SUBST(DOCDIR)
+
+
 # if --bindir was not given to ./configure, then $bindir will = the
 # literal string "${exec_prefix}\bin"
 if test "x$bindir" != x\$\{exec_prefix\}\/bin; then
@@ -52,4 +62,5 @@ echo -e
 echo installation prefix = $prefix
 echo The binary will be installed to $BINDIR
 echo datadir = $DATADIR
+echo docdir = $DOCDIR
 echo -e

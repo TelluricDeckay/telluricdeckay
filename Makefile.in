@@ -68,6 +68,12 @@ CARD_FILES =	\
 	QS.svg	\
 	KS.svg	\
 
+DOC_FILES =	\
+	README.md	\
+	CONTRIBUTING.md	\
+	Cargo.toml	\
+	LICENSE-MIT	\
+	LICENSE-APACHE
 
 CLEAN_FILES =	\
 	telluricdeckay.desktop	\
@@ -89,6 +95,10 @@ install: build
 	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
 	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@DATADIR@/applications
 	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@DATADIR@/pixmaps
+	install -d $(DESTDIR)@DOCDIR@
+	for file in $(DOC_FILES); do	\
+		install -D -m 0644 $$file $(DESTDIR)@DOCDIR@;	\
+	done
 
 install-strip: install
 	strip $(DESTDIR)@BINDIR@/telluricdeckay
@@ -110,6 +120,11 @@ uninstall:
 		file="$(DESTDIR)@DATADIR@/telluricdeckay/assets/cards/"$$card;	\
 		if test -f $$file; then	\
 			$(RM) $$file;	\
+		fi;	\
+	done
+	for file in $(DOC_FILES); do	\
+		if test -f "$(DESTDIR)@DOCDIR@/"$$file; then	\
+			$(RM) "$(DESTDIR)@DOCDIR@/"$$file;	\
 		fi;	\
 	done
 
