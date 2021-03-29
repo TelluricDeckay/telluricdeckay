@@ -1,4 +1,4 @@
-use crate::config_h;
+use crate::config;
 use iced::{window::Icon, Length, Svg};
 use image::{io::Reader as ImageReader, ImageResult, RgbaImage};
 use ionic_deckhandler::{Card, Rank, Suit};
@@ -6,7 +6,7 @@ use ionic_deckhandler::{Card, Rank, Suit};
 // TODO: these assets can take time to load. Perhaps look at way to cache them.
 // Card display.
 fn card_img(card_name: &str) -> Svg {
-    Svg::from_path(format!("{}/assets/cards/{}", config_h::get_assetsdir(), card_name))
+    Svg::from_path(format!("{}/assets/cards/{}", config::get_assetsdir(), card_name))
         .width(Length::Units(50))
         .height(Length::Units(50))
 }
@@ -245,7 +245,7 @@ fn get_rgba8img(filename: &str) -> ImageResult<RgbaImage> {
 }
 
 pub fn get_icon() -> Option<Icon> {
-    get_rgba8img(&format!("{}/telluricdeckay.png", config_h::get_pixmapsdir())).map_or_else(
+    get_rgba8img(&format!("{}/telluricdeckay.png", config::get_pixmapsdir())).map_or_else(
         |e| {
             eprintln!("Could not load image: {:?}", e);
             None

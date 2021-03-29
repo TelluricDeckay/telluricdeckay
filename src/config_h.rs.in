@@ -1,25 +1,4 @@
 
-
-use std::path::Path;
-
-fn get_datadir() -> &'static str {
+pub fn get_datadir() -> &'static str {
   "@DATADIR@"
-}
-
-pub fn get_assetsdir() -> String {
-  if Path::new("./assets/cards").exists() {
-    return ".".to_owned();
-  }
-  format!("{}/{}", get_datadir(), "@PACKAGE_TARNAME@")
-}
-
-pub fn get_localedir() -> String {
-  format!("{}/{}", get_datadir(), "locale")
-}
-
-pub fn get_pixmapsdir() -> String {
-  if Path::new("./assets").exists() {
-    return "./assets".to_owned();
-  }
-  format!("{}/{}", get_datadir(), "pixmaps")
 }

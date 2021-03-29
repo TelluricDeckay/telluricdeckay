@@ -6,6 +6,24 @@ use std::{
 use structopt::StructOpt;
 use telluricdeckay::{cli_options, config_h};
 
+pub fn get_assetsdir() -> String {
+  if Path::new("./assets/cards").exists() {
+    return ".".to_owned();
+  }
+  format!("{}/{}", config_h::get_datadir(), env!("CARGO_PKG_NAME"))
+}
+
+pub fn get_localedir() -> String {
+  format!("{}/{}", config_h::get_datadir(), "locale")
+}
+
+pub fn get_pixmapsdir() -> String {
+  if Path::new("./assets").exists() {
+    return "./assets".to_owned();
+  }
+  format!("{}/{}", config_h::get_datadir(), "pixmaps")
+}
+
 fn get_homedir() -> io::Result<String> {
     let homedir: String = match dirs::home_dir() {
         Some(homedir) => homedir.to_str().unwrap().into(),
