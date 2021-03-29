@@ -86,8 +86,9 @@ DISTCLEAN_FILES =	\
 	config.log
 
 build:
-	# The cargo binary can't be found when `sudo` is used to `make install`
-	# You'll need to run 'cargo build --release' to update the binary.
+	# You need to run 'cargo build --release' to build or update the binary.
+	# (Because if 'make install' is run as sudo, the cargo binary can't be found if
+	# root has never installed cargo.)
 
 install: build
 	install -D -s -m 0755 ./target/release/telluricdeckay -t $(DESTDIR)@BINDIR@
