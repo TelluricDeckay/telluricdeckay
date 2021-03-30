@@ -14,6 +14,7 @@ env:
 
 jobs:
   build:
+    if: contains(toJson(github.event.commits), '[skip check]') == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -22,6 +23,7 @@ jobs:
     - run: cargo build --verbose
     - run: cargo test --verbose
   test_install:
+    if: contains(toJson(github.event.commits), '[skip check]') == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
