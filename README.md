@@ -33,11 +33,9 @@ run the game and is primarily intended for packagers.
 If `<dir>` is /usr, the binary will be installed to /usr/games, the data into
 /usr/share/...
 
-To install without root privileges, try one of these when running
-`configure` above:
+Example for installing without root privileges:
 
     ./configure --prefix=$HOME/.local
-    ./configure --prefix=$PWD/pkg
 
 The prefix(path) to the data directory will be built into the binary.
 
