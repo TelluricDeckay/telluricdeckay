@@ -23,7 +23,8 @@ can then skip the first two steps listed below.
 ## Installation
 
 No distribution packages are available. Installation is not required to
-run the game and is primarily intended for packagers.
+run the game and is primarily intended for packagers or anyone who
+wants to install a release.
 
     autoconf (only needs to be run once, unless configure.ac is changed)
     ./configure --prefix=<dir> (or with no prefix given; defaults to /usr/local)
