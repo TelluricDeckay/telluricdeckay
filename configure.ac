@@ -12,11 +12,6 @@ AC_INIT([Telluric Deckay],
 DATE=$(date)
 AC_SUBST(DATE)
 
-AC_CONFIG_FILES([Makefile
-                 telluricdeckay.desktop
-                 telluricdeckay.appdata.xml
-                 src/config_h.rs])
-
 if test "x$prefix" = xNONE; then
     PREFIX=$ac_default_prefix
 else
@@ -54,6 +49,11 @@ AC_SUBST(BINDIR)
 if test "x$exec_prefix" != xNONE; then
     AC_MSG_ERROR([the --exec-prefix option is not supported])
 fi
+
+AC_CONFIG_FILES([Makefile
+                 $PACKAGE_TARNAME.desktop
+                 $PACKAGE_TARNAME.appdata.xml
+                 src/config_h.rs])
 
 # Creates the files above by reading their corresponding .in file
 AC_OUTPUT

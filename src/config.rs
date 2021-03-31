@@ -6,11 +6,16 @@ use std::{
 use structopt::StructOpt;
 use telluricdeckay::{cli_options, config_h};
 
-pub fn get_assetsdir() -> String {
+
+pub fn get_datadir_with_package_name() -> String {
+  format!("{}/{}", config_h::get_datadir(), env!("CARGO_PKG_NAME"))
+}
+
+pub fn get_cardsdir() -> String {
   if Path::new("./assets/cards").exists() {
     return ".".to_owned();
   }
-  format!("{}/{}", config_h::get_datadir(), env!("CARGO_PKG_NAME"))
+  format!("{}/{}", get_datadir_with_package_name(), "cards" )
 }
 
 pub fn get_localedir() -> String {

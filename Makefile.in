@@ -79,8 +79,8 @@ DISTCLEAN_FILES =	\
 	Makefile	\
 	config.status	\
 	config.log	\
-	telluricdeckay.desktop	\
-	telluricdeckay.appdata.xml	\
+	@PACKAGE_TARNAME@.desktop	\
+	@PACKAGE_TARNAME@.appdata.xml	\
 	src/config_h.rs
 
 build:
@@ -89,34 +89,34 @@ build:
 	# root has never installed cargo.)
 
 install: build
-	install -D -s -m 0755 ./target/release/telluricdeckay -t $(DESTDIR)@BINDIR@
-	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@DATADIR@/telluricdeckay/assets/cards
-	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
-	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@DATADIR@/applications
-	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@DATADIR@/pixmaps
+	install -D -s -m 0755 ./target/release/@PACKAGE_TARNAME@ -t $(DESTDIR)@BINDIR@
+	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@DATADIR@/@PACKAGE_TARNAME@/cards
+	install -D -m 0644 ./@PACKAGE_TARNAME@.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
+	install -D -m 0644 ./@PACKAGE_TARNAME@.desktop -t $(DESTDIR)@DATADIR@/applications
+	install -D -m 0644 ./assets/@PACKAGE_TARNAME@.png -t $(DESTDIR)@DATADIR@/pixmaps
 	install -d $(DESTDIR)@DOCDIR@
 	for file in $(DOC_FILES); do	\
 		install -D -m 0644 $$file $(DESTDIR)@DOCDIR@;	\
 	done
 
 install-strip: install
-	strip $(DESTDIR)@BINDIR@/telluricdeckay
+	strip $(DESTDIR)@BINDIR@/@PACKAGE_TARNAME@
 
 uninstall:
-	if test -f $(DESTDIR)@BINDIR@/telluricdeckay; then	\
-		$(RM) $(DESTDIR)@BINDIR@/telluricdeckay;	\
+	if test -f $(DESTDIR)@BINDIR@/@PACKAGE_TARNAME@; then	\
+		$(RM) $(DESTDIR)@BINDIR@/@PACKAGE_TARNAME@;	\
 	fi;	\
-	if test -f $(DESTDIR)@DATADIR@/appdata/telluricdeckay.appdata.xml; then	\
-		$(RM) $(DESTDIR)@DATADIR@/appdata/telluricdeckay.appdata.xml;	\
+	if test -f $(DESTDIR)@DATADIR@/appdata/@PACKAGE_TARNAME@.appdata.xml; then	\
+		$(RM) $(DESTDIR)@DATADIR@/appdata/@PACKAGE_TARNAME@.appdata.xml;	\
 	fi;	\
-	if test -f $(DESTDIR)@DATADIR@/applications/telluricdeckay.desktop; then	\
-		$(RM) $(DESTDIR)@DATADIR@/applications/telluricdeckay.desktop;	\
+	if test -f $(DESTDIR)@DATADIR@/applications/@PACKAGE_TARNAME@.desktop; then	\
+		$(RM) $(DESTDIR)@DATADIR@/applications/@PACKAGE_TARNAME@.desktop;	\
 	fi;	\
-	if test -f $(DESTDIR)@DATADIR@/pixmaps/telluricdeckay.png; then	\
-		$(RM) $(DESTDIR)@DATADIR@/pixmaps/telluricdeckay.png;	\
+	if test -f $(DESTDIR)@DATADIR@/pixmaps/@PACKAGE_TARNAME@.png; then	\
+		$(RM) $(DESTDIR)@DATADIR@/pixmaps/@PACKAGE_TARNAME@.png;	\
 	fi;	\
 	for card in $(CARD_FILES); do	\
-		file="$(DESTDIR)@DATADIR@/telluricdeckay/assets/cards/"$$card;	\
+		file="$(DESTDIR)@DATADIR@/@PACKAGE_TARNAME@/cards/"$$card;	\
 		if test -f $$file; then	\
 			$(RM) $$file;	\
 		fi;	\

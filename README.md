@@ -38,6 +38,10 @@ Example for installing without root privileges:
 
     ./configure --prefix=$HOME/.local
 
+for testing changes, try
+
+    ./configure --prefix=$PWD/install_test
+
 The prefix(path) to the data directory will be built into the binary.
 
 (Packagers: [DESTDIR](https://www.gnu.org/prep/standards/html_node/DESTDIR.html)
