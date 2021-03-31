@@ -13,7 +13,7 @@ pub fn get_datadir_with_package_name() -> String {
 
 pub fn get_cardsdir() -> String {
   if Path::new("./assets/cards").exists() {
-    return ".".to_owned();
+    return "./assets/cards".to_owned();
   }
   format!("{}/{}", get_datadir_with_package_name(), "cards" )
 }
