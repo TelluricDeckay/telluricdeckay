@@ -32,7 +32,7 @@ AC_SUBST(DATADIR)
 if test "x$docdir" != x\$\{datarootdir\}\/doc\/\$\{PACKAGE_TARNAME\}; then
     DOCDIR=${docdir}
 else
-    DOCDIR=$DATADIR/doc/$PACKAGE_TARNAME
+    DOCDIR=$DATADIR/doc
 fi
 AC_SUBST(DOCDIR)
 

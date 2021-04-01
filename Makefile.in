@@ -83,6 +83,18 @@ DISTCLEAN_FILES =	\
 	@PACKAGE_TARNAME@.appdata.xml	\
 	src/config_h.rs
 
+DIRS =	\
+	$(DESTDIR)@DATADIR@/@PACKAGE_TARNAME@/cards	\
+	$(DESTDIR)@DATADIR@/@PACKAGE_TARNAME@	\
+	$(DESTDIR)@DATADIR@/pixmaps	\
+	$(DESTDIR)@DATADIR@/applications	\
+	$(DESTDIR)@DATADIR@/appdata	\
+	$(DESTDIR)@DOCDIR@/@PACKAGE_TARNAME@	\
+	$(DESTDIR)@DOCDIR@	\
+	$(DESTDIR)@DATADIR@	\
+	$(DESTDIR)@BINDIR@	\
+	$(DESTDIR)@prefix@
+
 build:
 	# You need to run 'cargo build --release' to build or update the binary.
 	# (Because if 'make install' is run as sudo, the cargo binary can't be found if
@@ -94,9 +106,9 @@ install: build
 	install -D -m 0644 ./@PACKAGE_TARNAME@.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
 	install -D -m 0644 ./@PACKAGE_TARNAME@.desktop -t $(DESTDIR)@DATADIR@/applications
 	install -D -m 0644 ./assets/@PACKAGE_TARNAME@.png -t $(DESTDIR)@DATADIR@/pixmaps
-	install -d $(DESTDIR)@DOCDIR@
+	install -d $(DESTDIR)@DOCDIR@/@PACKAGE_TARNAME@
 	for file in $(DOC_FILES); do	\
-		install -D -m 0644 $$file $(DESTDIR)@DOCDIR@;	\
+		install -D -m 0644 $$file $(DESTDIR)@DOCDIR@/@PACKAGE_TARNAME@;	\
 	done
 
 install-strip: install
@@ -122,8 +134,15 @@ uninstall:
 		fi;	\
 	done
 	for file in $(DOC_FILES); do	\
-		if test -f "$(DESTDIR)@DOCDIR@/"$$file; then	\
-			$(RM) "$(DESTDIR)@DOCDIR@/"$$file;	\
+		if test -f "$(DESTDIR)@DOCDIR@/@PACKAGE_TARNAME@/"$$file; then	\
+			$(RM) "$(DESTDIR)@DOCDIR@/@PACKAGE_TARNAME@/"$$file;	\
+		fi;	\
+	done
+	for dir in $(DIRS); do	\
+		if test -d $$dir; then	\
+			if test -z "$(ls -A $$dir)"; then	\
+				rmdir $$dir;	\
+			fi;	\
 		fi;	\
 	done
 
