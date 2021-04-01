@@ -30,7 +30,7 @@ jobs:
     - run: autoconf
 # the prefix is later used for 'make install' (unless using sudo, the
 # target directory needs to have normal user write permissions).
-    - run: ./configure --prefix=$PWD
+    - run: ./configure --prefix=$PWD/install_test
     - run: cargo update
 
 # Now build to make sure a `cargo update` won't change results of the

@@ -140,7 +140,7 @@ uninstall:
 	done
 	for dir in $(DIRS); do	\
 		if test -d $$dir; then	\
-			if test "x" = "x$(ls -1qA $$dir)"; then	\
+			if test -z "$$(ls -1qA $$dir)"; then	\
 				rmdir $$dir;	\
 			fi;	\
 		fi;	\
