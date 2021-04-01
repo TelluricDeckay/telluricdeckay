@@ -155,3 +155,24 @@ pub fn get() -> Data {
     }
     config_data
 }
+
+#[test]
+fn access_ace_of_clubs() {
+    assert_eq!(
+        Path::new(&format!("{}/AC.svg", get_cardsdir())).exists(),
+        true
+    );
+}
+
+#[test]
+fn access_pixmap() {
+    assert_eq!(
+        Path::new(&format!(
+            "{}/{}.png",
+            get_pixmapsdir(),
+            env!("CARGO_PKG_NAME")
+        ))
+        .exists(),
+        true
+    );
+}
