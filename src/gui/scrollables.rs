@@ -1,4 +1,4 @@
-use iced::scrollable;
+use iced::{scrollable, Point};
 
 pub struct Variant {
     pub title: &'static str,
@@ -18,8 +18,8 @@ impl Variant {
                 // TODO: fix this when proper patch is added to iced.
                 // See: https://github.com/hecrj/iced/pull/607#issuecomment-742818666
                 s = unsafe {
-                    let mut tmp = std::mem::transmute::<_, (Option<f64>, f64)>(s);
-                    tmp.1 = 999999.0;
+                    let mut tmp = std::mem::transmute::<_, (Option<f32>, Option<Point>, f32)>(s);
+                    tmp.2 = 999999.0;
                     std::mem::transmute::<_, scrollable::State>(tmp)
                 };
                 s
