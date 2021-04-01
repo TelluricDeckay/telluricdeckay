@@ -245,7 +245,12 @@ fn get_rgba8img(filename: &str) -> ImageResult<RgbaImage> {
 }
 
 pub fn get_icon() -> Option<Icon> {
-    get_rgba8img(&format!("{}/{}.png", config::get_pixmapsdir(), env!("CARGO_PKG_NAME"))).map_or_else(
+    get_rgba8img(&format!(
+        "{}/{}.png",
+        config::get_pixmapsdir(),
+        env!("CARGO_PKG_NAME")
+    ))
+    .map_or_else(
         |e| {
             eprintln!("Could not load image: {:?}", e);
             None
@@ -260,4 +265,37 @@ pub fn get_icon() -> Option<Icon> {
             )
         },
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{config, gui::asset_manager};
+    use iced::window::Icon;
+    use std::path::Path;
+
+    #[test]
+    fn access_ace_of_clubs() {
+        assert_eq!(
+            Path::new(&format!("{}/AC.svg", config::get_cardsdir())).exists(),
+            true
+        );
+    }
+
+    #[test]
+    fn access_pixmap() {
+        assert_eq!(
+            Path::new(&format!(
+                "{}/{}.png",
+                config::get_pixmapsdir(),
+                env!("CARGO_PKG_NAME")
+            ))
+            .exists(),
+            true
+        );
+    }
+
+    #[test]
+    fn get_icon() {
+        assert_eq!(asset_manager::get_icon().is_some(), true);
+    }
 }
