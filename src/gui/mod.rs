@@ -11,7 +11,7 @@ use tr::tr;
 use iced::{
     button, container, pane_grid, scrollable, slider, text_input, Align, Button, Checkbox, Color,
     Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Scrollable,
-    Slider, Space, Text, TextInput, Vector, executor, Application, Command
+    Slider, Space, Text, TextInput, Vector, executor, Application, Command, Clipboard
 };
 
 use style::{ButtonStyle, ContainerStyle};
@@ -327,7 +327,7 @@ impl Application for Gui {
         self.pages.title()
     }
 
-    fn update(&mut self, event: Message) -> Command<Message> {
+    fn update(&mut self, event: Message, clipboard: &mut Clipboard) -> Command<Message> {
         self.pages.update(event);
         Command::none()
     }

@@ -3,7 +3,6 @@ mod config_h;
 mod game;
 mod gui;
 mod player;
-mod config_h;
 use iced::{window::Settings, Result, Application};
 
 // localization
