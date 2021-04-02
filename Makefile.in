@@ -96,11 +96,11 @@ DIRS =	\
 	$(DESTDIR)@prefix@
 
 release:
-	if ! test $$(command -v cargo); then	\
-		echo cargo binary not found;	\
-		exit 1;	\
+	if test $$(command -v cargo); then	\
+		cargo build --release;	\
+	else	\
+		echo "\n! Warning: cargo binary not found; release target not rebuilt.\n";	\
 	fi
-	cargo build --release
 
 install: release
 	install -D -s -m 0755 ./target/release/@PACKAGE_TARNAME@ -t $(DESTDIR)@BINDIR@
