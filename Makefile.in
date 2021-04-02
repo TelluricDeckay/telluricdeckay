@@ -96,12 +96,11 @@ DIRS =	\
 	$(DESTDIR)@prefix@
 
 release:
-	if test $$(command -v cargo); then	\
-		cargo build --release;	\
-	else	\
+	if ! test $$(command -v cargo); then	\
 		echo cargo binary not found;	\
 		exit 1;	\
 	fi
+	cargo build --release
 
 install: release
 	install -D -s -m 0755 ./target/release/@PACKAGE_TARNAME@ -t $(DESTDIR)@BINDIR@
