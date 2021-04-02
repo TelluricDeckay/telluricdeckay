@@ -34,8 +34,6 @@ jobs:
     - run: cargo update
 
 # Now build to make sure a `cargo update` won't change results of the
-# build. The install target looks for a release build, so going to first
-# build with the --release flag.
-    - run: cargo build --release
+# build.
     - run: make install
     - run: make uninstall

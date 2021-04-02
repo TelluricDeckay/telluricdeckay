@@ -95,12 +95,15 @@ DIRS =	\
 	$(DESTDIR)@BINDIR@	\
 	$(DESTDIR)@prefix@
 
-build:
-	# You need to run 'cargo build --release' to build or update the binary.
-	# (Because if 'make install' is run as sudo, the cargo binary can't be found if
-	# root has never installed cargo.)
+release:
+	if test $$(command -v cargo); then	\
+		cargo build --release;	\
+	else	\
+		echo cargo binary not found;	\
+		exit 1;	\
+	fi
 
-install: build
+install: release
 	install -D -s -m 0755 ./target/release/@PACKAGE_TARNAME@ -t $(DESTDIR)@BINDIR@
 	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@DATADIR@/@PACKAGE_TARNAME@/cards
 	install -D -m 0644 ./@PACKAGE_TARNAME@.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
