@@ -12,7 +12,7 @@ In early development, not ready for use yet
 
 If you only want to build and run, but not install, just copy
 'config_h.rs.in' to config_h.rs, open with an editor, and replace
-"@DATADIR@" with "/usr/local" (or some other arbitrary directory). You
+"@DATADIR@" with "/usr/local/share" (or some other arbitrary directory). You
 can then skip the first two steps listed below.
 
     autoconf
