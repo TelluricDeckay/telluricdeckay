@@ -5,13 +5,13 @@ mod style;
 use crate::config;
 use crate::game::{start, Game};
 use crate::player;
-use asset_manager::HandToImgs;
+use asset_manager::{HandToImgs, AssetCacher, CardSvgOrText, async_card_img, CARD_FILES};
 use tr::tr;
 
 use iced::{
     button, container, pane_grid, scrollable, slider, text_input, Align, Button, Checkbox, Color,
     Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Scrollable,
-    Slider, Space, Text, TextInput, Vector, executor, Application, Command, Clipboard
+    Slider, Space, Text, TextInput, Vector, executor, Application, Command, Clipboard, widget::svg::Handle, Svg,
 };
 
 use style::{ButtonStyle, ContainerStyle};
@@ -56,7 +56,7 @@ impl<'a> Page {
                     .horizontal_alignment(HorizontalAlignment::Center),
             )
             .align_items(Align::Center)
-            .max_width(500)
+            .max_width(600)
     }
 
     fn menu(button_state: &'a mut button::State) -> Column<'a, Message> {
@@ -107,27 +107,34 @@ impl<'a> Page {
         call_btn_state: &'a mut button::State,
         fold_btn_state: &'a mut button::State,
         scroll: &'a mut scrollables::Variant,
+        assets: &AssetCacher
     ) -> Column<'a, Message> {
         Column::new().push(
             Row::new()
                 .spacing(100)
                 .push(
                     Self::container("Table", 30)
+                        .max_width(1000)
                         .push({
-                            let mut col = Column::new().spacing(100);
+                            let mut col = Column::new().spacing(20);
                             let mut player_row = Row::new().spacing(5);
                             for (i, p) in game.players.iter().enumerate() {
                                 if i % 2 == 0 && i != 0 {
                                     col = col.push(player_row);
-                                    player_row = Row::new().spacing(10);
+                                    player_row = Row::new();
                                 }
                                 player_row = player_row.push({
-                                    let mut card_row = Row::new();
-                                    card_row = card_row.push(Text::new(p.name));
-                                    for c_img in p.hand.get_hand_imgs().iter() {
-                                        card_row = card_row.push(c_img.clone());
+                                    let player_container = Self::container(p.name, 15);
+                                    let mut card_row = Row::new().spacing(10);
+                                    for card in p.hand.iter() {
+                                        match assets.get_card_asset(card) {
+                                            CardSvgOrText::Text(text) => card_row = card_row.push(Text::new(text)),
+                                            CardSvgOrText::Svg(img) => card_row = card_row.push(Svg::new(Handle::from_memory(img.clone())))
+                                                .width(Length::Units(100))
+                                                .height(Length::Units(100)),
+                                        }
                                     }
-                                    card_row
+                                    player_container.push(card_row)
                                 })
                             }
                             col
@@ -138,8 +145,13 @@ impl<'a> Page {
                                 .push({
                                     let hand = Self::container("Your hand", 20);
                                     let mut card_row = Row::new();
-                                    for c_img in game.players[4].hand.get_hand_imgs().into_iter() {
-                                        card_row = card_row.push(c_img);
+                                    for card in game.players[4].hand.iter() {
+                                        match assets.get_card_asset(card) {
+                                            CardSvgOrText::Text(text) => card_row = card_row.push(Text::new(text).size(10)),
+                                            CardSvgOrText::Svg(img) => card_row = card_row.push(Svg::new(Handle::from_memory(img.clone())))
+                                                .width(Length::Units(100))
+                                                .height(Length::Units(100)),
+                                        }
                                     }
                                     hand.push(card_row)
                                 })
@@ -208,7 +220,7 @@ impl<'a> Page {
         )
     }
 
-    fn view(&mut self, bet_sdr_val: f32) -> Element<Message> {
+    fn view(&mut self, bet_sdr_val: f32, assets: &AssetCacher) -> Element<Message> {
         match *self {
             Page::Menu {
                 ref mut start_button,
@@ -224,7 +236,7 @@ impl<'a> Page {
                 ref mut fold,
                 ref mut scroll,
                 ref mut game,
-            } => Self::game(game, bet, bet_amount, bet_sdr_val, call, fold, scroll),
+            } => Self::game(game, bet, bet_amount, bet_sdr_val, call, fold, scroll, assets),
             _ => panic!("state not supported"),
         }
         .into()
@@ -237,7 +249,7 @@ struct Pages {
     bet_sdr_val: f32,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub enum Message {
     NewGamePressed,
     FivePlayerGamePressed,
@@ -246,6 +258,10 @@ pub enum Message {
     BetAmountChanged(f32),
     CallPressed,
     FoldPressed,
+    ImageLoaded {
+        card_idx: usize,
+        img: Vec<u8>
+    }
 }
 
 impl Pages {
@@ -282,8 +298,8 @@ impl Pages {
         self.pages[self.current].title()
     }
 
-    fn view(&mut self) -> Element<Message> {
-        self.pages[self.current].view(self.bet_sdr_val)
+    fn view(&mut self, assets: &AssetCacher) -> Element<Message> {
+        self.pages[self.current].view(self.bet_sdr_val, assets)
     }
 
     fn update(&mut self, event: Message) {
@@ -300,6 +316,7 @@ impl Pages {
             Message::BetAmountChanged(amount) => self.bet_sdr_val = amount,
             Message::CallPressed => (),
             Message::FoldPressed => (),
+            Message::ImageLoaded { .. } => (),
             _ => panic!("not implemented this message yet."),
         }
     }
@@ -307,6 +324,7 @@ impl Pages {
 
 pub struct Gui {
     pages: Pages,
+    cache: AssetCacher
 }
 
 impl Application for Gui {
@@ -318,6 +336,7 @@ impl Application for Gui {
         (
             Gui {
             pages: Pages::new(),
+            cache: AssetCacher::new(),
             },
             Command::none(),
         )
@@ -328,12 +347,21 @@ impl Application for Gui {
     }
 
     fn update(&mut self, event: Message, clipboard: &mut Clipboard) -> Command<Message> {
-        self.pages.update(event);
-        Command::none()
+        self.pages.update(event.clone());
+        match event {
+            Message::FivePlayerGamePressed => {
+                Command::batch((0..52).map(|i| Command::perform(async_card_img(CARD_FILES[i]), move |x| Message::ImageLoaded {card_idx: i, img: x})))
+            },
+            Message::ImageLoaded { card_idx, img } => {
+                self.cache.set_card_asset(card_idx, img);
+                Command::none()
+            },
+            _ => Command::none()
+        }
     }
 
     fn view(&mut self) -> Element<Self::Message> {
-        Container::new(self.pages.view())
+        Container::new(self.pages.view(&self.cache))
             .style(ContainerStyle)
             .width(Length::Fill)
             .height(Length::Fill)
