@@ -70,7 +70,7 @@ CARD_FILES =	\
 	TS.svg	\
 	JS.svg	\
 	QS.svg	\
-	KS.svg	\
+	KS.svg
 
 
 CLEAN_FILES =	\
@@ -93,6 +93,12 @@ build:
 install: build
 	install -D -s -m 0755 ./target/release/telluricdeckay -t $(BIN_DEST)
 	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@datadir@/telluricdeckay/assets/cards
+	for card in $(CARD_FILES); do	\
+		if test ! -r "$(DESTDIR)@datadir@/telluricdeckay/assets/cards/"$$card; then	\
+			echo "card $$card not installed";	\
+			exit 1;	\
+		fi;	\
+	done
 	install -D -m 0644 ./telluricdeckay.appdata.xml -t $(DESTDIR)@datadir@/appdata
 	install -D -m 0644 ./telluricdeckay.desktop -t $(DESTDIR)@datadir@/applications
 	install -D -m 0644 ./assets/telluricdeckay.png -t $(DESTDIR)@datadir@/pixmaps
