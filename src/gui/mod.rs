@@ -110,9 +110,12 @@ impl<'a> Page {
     ) -> Column<'a, Message> {
         Column::new().push(
             Row::new()
-                .spacing(100)
+                .width(Length::Fill)
+                .padding(10)
+                .spacing(50)
                 .push(
                     Self::container("Table", 30)
+                        .width(Length::FillPortion(3))
                         .push({
                             let mut col = Column::new().spacing(100);
                             let mut player_row = Row::new().spacing(5);
@@ -124,8 +127,8 @@ impl<'a> Page {
                                 player_row = player_row.push({
                                     let mut card_row = Row::new();
                                     card_row = card_row.push(Text::new(p.name));
-                                    for c_img in p.hand.get_hand_imgs().iter() {
-                                        card_row = card_row.push(c_img.clone());
+                                    for c_img in p.hand.get_hand_imgs().into_iter() {
+                                        card_row = card_row.push(c_img);
                                     }
                                     card_row
                                 })
@@ -199,9 +202,10 @@ impl<'a> Page {
                 )
                 .push(
                     Self::container("State", 20)
+                        .width(Length::FillPortion(1))
                         .push(Text::new(format!("Chips in pot: {}", game.pot)).size(15))
                         .push(game.status.iter().fold(
-                            Scrollable::new(&mut scroll.state).height(350.into()),
+                            Scrollable::new(&mut scroll.state),
                             |s, msg| s.push(Text::new(msg).size(15)),
                         )),
                 ),
