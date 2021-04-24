@@ -66,7 +66,7 @@ CARD_FILES =	\
 	TS.svg	\
 	JS.svg	\
 	QS.svg	\
-	KS.svg	\
+	KS.svg
 
 DOC_FILES =	\
 	README.md	\
@@ -105,6 +105,12 @@ release:
 install: release
 	install -D -s -m 0755 ./target/release/@PACKAGE_TARNAME@ -t $(DESTDIR)@BINDIR@
 	install -D -m 0644 ./assets/cards/* -t $(DESTDIR)@DATADIR@/@PACKAGE_TARNAME@/cards
+	for card in $(CARD_FILES); do	\
+		if test ! -r "$(DESTDIR)@DATADIR@/@PACKAGE_TARNAME@/cards/"$$card; then	\
+			echo "card $$card not installed";	\
+			exit 1;	\
+		fi;	\
+	done
 	install -D -m 0644 ./@PACKAGE_TARNAME@.appdata.xml -t $(DESTDIR)@DATADIR@/appdata
 	install -D -m 0644 ./@PACKAGE_TARNAME@.desktop -t $(DESTDIR)@DATADIR@/applications
 	install -D -m 0644 ./assets/@PACKAGE_TARNAME@.png -t $(DESTDIR)@DATADIR@/pixmaps
