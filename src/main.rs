@@ -2,7 +2,7 @@ mod config;
 mod game;
 mod gui;
 mod player;
-use iced::{window::Settings, Error, Sandbox};
+use iced::{window::Settings, Result, Application};
 
 // localization
 use i18n_embed::{gettext::gettext_language_loader, DesktopLanguageRequester};
@@ -14,7 +14,7 @@ use tr::tr_init;
 #[folder = "i18n/mo"] // path to the compiled localization resources
 struct Translations;
 
-fn main() -> Result<(), Error> {
+fn main() -> Result {
     tr_init!(config::get_localedir());
     let translations = Translations {};
     let language_loader = gettext_language_loader!();
