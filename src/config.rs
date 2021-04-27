@@ -159,7 +159,7 @@ pub fn get() -> Data {
 #[test]
 fn access_ace_of_clubs() {
     assert_eq!(
-        Path::new(&format!("{}/AC.svg", get_cardsdir())).exists(),
+        Path::new(&format!("{}/AC.png", get_cardsdir())).exists(),
         true
     );
 }
