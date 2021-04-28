@@ -5,13 +5,13 @@ mod style;
 use crate::config;
 use crate::game::{start, Game};
 use crate::player;
-use asset_manager::HandToImgs;
+use asset_manager::{AssetCacher, CardImgOrText, async_card_img, CARD_FILES};
 use tr::tr;
 
 use iced::{
     button, container, pane_grid, scrollable, slider, text_input, Align, Button, Checkbox, Color,
-    Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Sandbox, Scrollable,
-    Slider, Space, Text, TextInput, Vector,
+    Column, Container, Element, HorizontalAlignment, Length, Radio, Row, Application, Scrollable,
+    Slider, Space, Text, TextInput, Vector, widget::image::Handle, Image, executor, Command, Clipboard,
 };
 
 use style::{ButtonStyle, ContainerStyle};
@@ -107,28 +107,35 @@ impl<'a> Page {
         call_btn_state: &'a mut button::State,
         fold_btn_state: &'a mut button::State,
         scroll: &'a mut scrollables::Variant,
+        assets: &AssetCacher,
     ) -> Column<'a, Message> {
         Column::new().push(
             Row::new()
-                .spacing(100)
+                .width(Length::Fill)
+                .padding(10)
+                .spacing(50)
                 .push(
                     Self::container("Table", 30)
+                        .width(Length::FillPortion(3))
                         .push({
                             let mut col = Column::new().spacing(100);
-                            let mut player_row = Row::new().spacing(5);
+                            let mut player_row = Row::new().spacing(15);
                             for (i, p) in game.players.iter().enumerate() {
                                 if i % 2 == 0 && i != 0 {
                                     col = col.push(player_row);
-                                    player_row = Row::new().spacing(10);
+                                    player_row = Row::new().spacing(15);
                                 }
                                 player_row = player_row.push({
-                                    let mut card_row = Row::new();
-                                    card_row = card_row.push(Text::new(p.name));
-                                    for c_img in p.hand.get_hand_imgs().iter() {
-                                        card_row = card_row.push(c_img.clone());
+                                    let player_container = Self::container(p.name, 15);
+                                    let mut card_row = Row::new().spacing(10);
+                                    for card in p.hand.iter() {
+                                        match assets.get_card_asset(card) {
+                                            CardImgOrText::Text(text) => card_row = card_row.push(Text::new(text).size(10)),
+                                            CardImgOrText::Img(img) => card_row = card_row.push(Image::new(Handle::from_memory(img.clone())).width(Length::Units(60))),
+                                        }
                                     }
-                                    card_row
-                                })
+                                    player_container.push(card_row)
+                                });
                             }
                             col
                         })
@@ -137,14 +144,18 @@ impl<'a> Page {
                                 .spacing(50)
                                 .push({
                                     let hand = Self::container("Your hand", 20);
-                                    let mut card_row = Row::new();
-                                    for c_img in game.players[4].hand.get_hand_imgs().into_iter() {
-                                        card_row = card_row.push(c_img);
+                                    let mut card_row = Row::new().spacing(10);
+                                    for card in game.players[4].hand.iter() {
+                                        match assets.get_card_asset(card) {
+                                            CardImgOrText::Text(text) => card_row = card_row.push(Text::new(text).size(10)),
+                                            CardImgOrText::Img(img) => card_row = card_row.push(Image::new(Handle::from_memory(img.clone())).width(Length::Units(60))),
+                                        }
                                     }
                                     hand.push(card_row)
                                 })
                                 .push(
                                     Self::container("Options", 20)
+                                        .spacing(10)
                                         .push(
                                             Text::new(format!(
                                                 "Chips left: {}",
@@ -199,16 +210,17 @@ impl<'a> Page {
                 )
                 .push(
                     Self::container("State", 20)
+                        .width(Length::FillPortion(1))
                         .push(Text::new(format!("Chips in pot: {}", game.pot)).size(15))
                         .push(game.status.iter().fold(
-                            Scrollable::new(&mut scroll.state).height(350.into()),
+                            Scrollable::new(&mut scroll.state),
                             |s, msg| s.push(Text::new(msg).size(15)),
                         )),
                 ),
         )
     }
 
-    fn view(&mut self, bet_sdr_val: f32) -> Element<Message> {
+    fn view(&mut self, bet_sdr_val: f32, assets: &AssetCacher) -> Element<Message> {
         match *self {
             Page::Menu {
                 ref mut start_button,
@@ -224,7 +236,7 @@ impl<'a> Page {
                 ref mut fold,
                 ref mut scroll,
                 ref mut game,
-            } => Self::game(game, bet, bet_amount, bet_sdr_val, call, fold, scroll),
+            } => Self::game(game, bet, bet_amount, bet_sdr_val, call, fold, scroll, assets),
             _ => panic!("state not supported"),
         }
         .into()
@@ -237,7 +249,7 @@ struct Pages {
     bet_sdr_val: f32,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub enum Message {
     NewGamePressed,
     FivePlayerGamePressed,
@@ -246,6 +258,10 @@ pub enum Message {
     BetAmountChanged(f32),
     CallPressed,
     FoldPressed,
+    ImageLoaded {
+        card_idx: usize,
+        img: Vec<u8>
+    }
 }
 
 impl Pages {
@@ -282,8 +298,8 @@ impl Pages {
         self.pages[self.current].title()
     }
 
-    fn view(&mut self) -> Element<Message> {
-        self.pages[self.current].view(self.bet_sdr_val)
+    fn view(&mut self, assets: &AssetCacher) -> Element<Message> {
+        self.pages[self.current].view(self.bet_sdr_val, assets)
     }
 
     fn update(&mut self, event: Message) {
@@ -300,6 +316,7 @@ impl Pages {
             Message::BetAmountChanged(amount) => self.bet_sdr_val = amount,
             Message::CallPressed => (),
             Message::FoldPressed => (),
+            Message::ImageLoaded { .. } => (),
             _ => panic!("not implemented this message yet."),
         }
     }
@@ -307,27 +324,42 @@ impl Pages {
 
 pub struct Gui {
     pages: Pages,
+    cache: AssetCacher,
 }
 
-impl Sandbox for Gui {
+impl Application for Gui {
+    type Executor = executor::Default;
     type Message = Message;
+    type Flags = ();
 
-    fn new() -> Gui {
-        Gui {
+    fn new(_flags: ()) -> (Gui, Command<Message>) {
+        (Gui {
             pages: Pages::new(),
-        }
+            cache: AssetCacher::new(),
+        },
+        Command::none(),)
     }
 
     fn title(&self) -> String {
         self.pages.title()
     }
 
-    fn update(&mut self, event: Self::Message) {
-        self.pages.update(event)
+    fn update(&mut self, event: Self::Message, clipboard: &mut Clipboard) -> Command<Message> {
+        self.pages.update(event.clone());
+        match event {
+            Message::FivePlayerGamePressed => {
+                Command::batch((0..52).map(|i| Command::perform(async_card_img(CARD_FILES[i]), move |x| Message::ImageLoaded {card_idx: i, img: x})))
+            },
+            Message::ImageLoaded { card_idx, img } => {
+                self.cache.set_card_asset(card_idx, img);
+                Command::none()
+            },
+            _ => Command::none()
+        }
     }
 
     fn view(&mut self) -> Element<Self::Message> {
-        Container::new(self.pages.view())
+        Container::new(self.pages.view(&self.cache))
             .style(ContainerStyle)
             .width(Length::Fill)
             .height(Length::Fill)
