@@ -3,7 +3,7 @@ name = "telluricdeckay"
 description = "A multiplayer network poker game"
 version = "0.1.0-dev"
 authors = ["Andy Alt <andy400-dev@yahoo.com>", "Jammyjamjamman <jdsherratt3@gmail.com>"]
-edition = "2018"
+edition = "2021"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 
