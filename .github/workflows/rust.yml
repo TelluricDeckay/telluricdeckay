@@ -3,9 +3,11 @@ name: Rust
 # Triggers the workflow on push or pull request events
 on:
   push:
+    branches: trunk
     paths-ignore:
     - '**.md'
   pull_request:
+    branches: trunk
     paths-ignore:
     - '**.md'
 
