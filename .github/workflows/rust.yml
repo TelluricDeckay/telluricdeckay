@@ -1,4 +1,7 @@
 name: Rust
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 # Triggers the workflow on push or pull request events
 on:
