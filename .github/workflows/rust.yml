@@ -19,19 +19,17 @@ env:
 
 jobs:
   build:
-    if: contains(toJson(github.event.commits), '[skip check]') == false
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: autoconf
     - run: ./configure
     - run: cargo build --verbose
     - run: cargo test --verbose
   test_install:
-    if: contains(toJson(github.event.commits), '[skip check]') == false
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: autoconf
 # the prefix is later used for 'make install' (unless using sudo, the
 # target directory needs to have normal user write permissions).
