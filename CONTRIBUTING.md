@@ -23,32 +23,9 @@ on a specific issue (or create a ticket if there's not one open yet.
 **Note**: If more than one person submits a patch for the same thing,
 your patch may get rejected.
 
-Use [The GitHub flow](https://guides.github.com/introduction/flow/),
-which mostly just involves creating a separate branch for each patch
-you're working on. Using that method helps prevent merge conflicts
-later. *Note* that you should never need to work on the trunk (main)
-branch or merge your patches into the trunk branch (See "syncing"
-below).
-
-Source code patches should only contain changes related to a single
-issue. This helps speed up the review and discussion process. However,
-if you're helping fix typos and grammar errors in documentation,
-multiple changes in one PR is fine. General rule of thumb for
-documentation patches on this project is 5 unrelated changes or fewer
-to a PR. But if they are only one-word or letter changes, I can be
-flexible and more than 5 will still be gratefully accepted for review.
+Use [The GitHub flow](https://guides.github.com/introduction/flow/).
 
 ## Documentation
 
 Lines in markdown documents should be less than 79 characters long when
 possible.
-
-## Syncing
-
-Periodically, you'll need to sync your repo with the upstream.
-GitHub has instructions for doing this
-
-* [Configuring a remote for a fork](https://help.github.com/articles/configuring-a-remote-for-a-fork/)
-  * For step 3 on that page, use ```https://github.com/TelluricDeckay/<repo-name>``` for the URL.
-* [Syncing a Fork](https://help.github.com/articles/syncing-a-fork/)
-  * On that page, it shows how to merge the **trunk** branch (steps 4 & 5).
