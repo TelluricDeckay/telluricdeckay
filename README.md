@@ -67,5 +67,4 @@ See
 
 * [Discussions](https://github.com/TelluricDeckay/telluricdeckay/discussions)
 * [Issues](https://github.com/TelluricDeckay/telluricdeckay/issues)
-* [Chat room](https://telluric-deckay.zulipchat.com/)
 * Emails listed in [Cargo.toml](https://github.com/TelluricDeckay/telluricdeckay/blob/trunk/Cargo.toml)
